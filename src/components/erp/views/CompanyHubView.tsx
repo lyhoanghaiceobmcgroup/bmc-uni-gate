@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { DashboardStats } from "@/components/dashboard/DashboardStats";
 import { OrganizationSetupForm } from "@/components/erp/OrganizationSetupForm";
+import DeleteCompanies from "@/components/erp/DeleteCompanies";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -914,7 +915,6 @@ export function CompanyHubView({ organizations = [] }: CompanyHubViewProps) {
                       <div>
                         <span className="text-muted-foreground">Tuân thủ:</span>
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${getComplianceColor(company.complianceScore)}`} />
                           <span className="font-medium">{company.complianceScore}%</span>
                         </div>
                       </div>
@@ -1070,7 +1070,6 @@ export function CompanyHubView({ organizations = [] }: CompanyHubViewProps) {
                       <div>
                         <span className="text-muted-foreground">Tuân thủ:</span>
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${getComplianceColor(company.complianceScore)}`} />
                           <span className="font-medium">{company.complianceScore}%</span>
                         </div>
                       </div>
@@ -1237,7 +1236,6 @@ export function CompanyHubView({ organizations = [] }: CompanyHubViewProps) {
                       <div>
                         <span className="text-muted-foreground block">Tuân thủ</span>
                         <div className="flex items-center gap-2">
-                          <div className={`w-2 h-2 rounded-full ${getComplianceColor(company.complianceScore)}`} />
                           <span className="font-medium">{company.complianceScore}%</span>
                         </div>
                       </div>
@@ -1390,6 +1388,10 @@ export function CompanyHubView({ organizations = [] }: CompanyHubViewProps) {
         </div>
       )}
 
+      {/* Delete Companies Component */}
+      <div className="mt-8">
+        <DeleteCompanies />
+      </div>
 
     </div>
   );

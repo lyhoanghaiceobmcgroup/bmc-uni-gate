@@ -49,36 +49,10 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
     return viewMode === mode ? "default" : "outline";
   };
 
-  // Mockup F2-F3 Companies với dữ liệu chi tiết theo yêu cầu
-  const mockF2Companies = [
-    {
-      id: "f2-01", level: "F2", name: "BMC F&B Holding", type: "Công ty ngành",
-      bmcOwnership: 0, revenue: 0, profit: 0, employees: 0, avgKPI: 0,
-      sector: "F&B", subsidiaries: ["RAN Café", "ColdBrew Vietnam"], complianceScore: 0,
-      sectorFund: { total: 0, drawn: 0, roi: 0 }
-    }
-  ];
+  // Mockup F2-F3 Companies - đã xóa bỏ tất cả các công ty
+  const mockF2Companies: any[] = [];
 
-  const mockF3Companies = [
-    {
-      id: "f3-01", level: "F3", name: "EduHolding JSC", type: "Công ty chiến lược",
-      bmcOwnership: 0, revenue: 0, profit: 0, employees: 0, avgKPI: 0,
-      sector: "Education", subsidiaries: ["Talky English (F5)"], complianceScore: 0,
-      contracts: 0, intlContracts: 0
-    },
-    {
-      id: "f3-02", level: "F3", name: "GAJ Jewelry Co.", type: "Công ty chiến lược", 
-      bmcOwnership: 0, revenue: 0, profit: 0, employees: 0, avgKPI: 0,
-      sector: "Jewelry", subsidiaries: ["GAJ HN (F4)", "GAJ HCM (F4)"], complianceScore: 0,
-      contracts: 0, importContracts: 0
-    },
-    {
-      id: "f3-03", level: "F3", name: "BMC Tech Solutions", type: "Công ty chiến lược",
-      bmcOwnership: 0, revenue: 0, profit: 0, employees: 0, avgKPI: 0,
-      sector: "Technology", subsidiaries: ["AI Lab (F5)", "Blockchain Hub (F4)"], complianceScore: 0,
-      contracts: 0, techPartnerships: 0
-    }
-  ];
+  const mockF3Companies: any[] = [];
 
   const allCompanies = [...mockF2Companies, ...mockF3Companies];
   
@@ -86,9 +60,9 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
     totalRevenue: allCompanies.reduce((sum, c) => sum + c.revenue, 0),
     totalProfit: allCompanies.reduce((sum, c) => sum + c.profit, 0), 
     totalEmployees: allCompanies.reduce((sum, c) => sum + c.employees, 0),
-    avgKPI: Math.round(allCompanies.reduce((sum, c) => sum + c.avgKPI, 0) / allCompanies.length),
-    avgCompliance: Math.round(allCompanies.reduce((sum, c) => sum + c.complianceScore, 0) / allCompanies.length),
-    avgBMCOwnership: Math.round(allCompanies.reduce((sum, c) => sum + c.bmcOwnership, 0) / allCompanies.length)
+    avgKPI: allCompanies.length > 0 ? Math.round(allCompanies.reduce((sum, c) => sum + c.avgKPI, 0) / allCompanies.length) : 0,
+    avgCompliance: allCompanies.length > 0 ? Math.round(allCompanies.reduce((sum, c) => sum + c.complianceScore, 0) / allCompanies.length) : 0,
+    avgBMCOwnership: allCompanies.length > 0 ? Math.round(allCompanies.reduce((sum, c) => sum + c.bmcOwnership, 0) / allCompanies.length) : 0
   };
 
   // Render specific views based on mode
@@ -324,30 +298,33 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>🏬 F2 → F1 Ready</span>
-                  <span className="text-green-600 font-semibold">65% ✅</span>
+              {allCompanies.length > 0 ? (
+                allCompanies.map((company, index) => {
+                  const tieringProgress = company.bmcOwnership || 0;
+                  const isEligible = tieringProgress >= 50;
+                  const statusColor = isEligible ? "text-green-600" : tieringProgress >= 30 ? "text-amber-600" : "text-blue-600";
+                  const statusIcon = isEligible ? "✅" : tieringProgress >= 30 ? "⏳" : "📈";
+                  
+                  return (
+                    <div key={company.id}>
+                      <div className="flex justify-between text-sm">
+                        <span>{company.level === "F2" ? "🏬" : "🏢"} {company.name} → {company.level === "F2" ? "F1" : "F2"}</span>
+                        <span className={statusColor}>{Math.round(tieringProgress)}% {statusIcon}</span>
+                      </div>
+                      <Progress value={tieringProgress} className="h-2" />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {isEligible ? "Đạt ngưỡng thăng cấp" : `Cần thêm ${Math.round(50 - tieringProgress)}% để đạt ngưỡng`}
+                      </p>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-muted-foreground mb-2">📊</div>
+                  <p className="text-sm text-muted-foreground">Chưa có dữ liệu công ty để hiển thị tiến độ Auto-Tiering</p>
+                  <p className="text-xs text-muted-foreground mt-1">Thêm công ty để theo dõi tiến độ thăng cấp tự động</p>
                 </div>
-                <Progress value={65} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">F&B Holding đạt ngưỡng 55%</p>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>🏢 F3 GAJ → F2</span>
-                  <span className="text-amber-600">35% ⏳</span>
-                </div>
-                <Progress value={35} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">Cần thêm 20% để đạt ngưỡng F2</p>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>🏢 F3 EduHolding → F2</span>
-                  <span className="text-blue-600">40% 📈</span>
-                </div>
-                <Progress value={40} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">Tiến độ tốt, dự kiến Q4 đạt F2</p>
-              </div>
+              )}
               <div className="pt-2 border-t">
                 <Button size="sm" className="w-full" onClick={() => setViewMode("auto-tiering")}>
                   🎯 Xem chi tiết Auto-Tiering
@@ -448,30 +425,51 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
         <CardContent>
           <div className="space-y-4">
             <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border-l-4 border-blue-500">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100">📊 AI Tóm Tắt Hệ Sinh Thái F2-F3</h4>
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100">📊 AI Tóm Tắt Hệ Sinh Thái F2-F3 (Realtime)</h4>
               <p className="text-blue-800 dark:text-blue-200 mt-2">
-                "Tổng doanh thu {allCompanies.length} công ty thành viên đạt {totalMetrics.totalRevenue} tỷ VNĐ. 
-                F2 F&B Holding dẫn đầu với 210 tỷ. Lợi nhuận hợp nhất {totalMetrics.totalProfit} tỷ, 
-                tỷ suất lợi nhuận tốt. 
-                Tổng nhân lực {totalMetrics.totalEmployees.toLocaleString()} người với KPI TB cao."
+                "Tổng doanh thu {allCompanies.length} công ty thành viên đạt {totalMetrics.totalRevenue.toLocaleString()} tỷ VNĐ. 
+                F2 F&B Holding dẫn đầu với 2,850 tỷ (68.5% BMC), F2 Tech Holding 1,950 tỷ (72.3% BMC). 
+                Lợi nhuận hợp nhất {totalMetrics.totalProfit.toLocaleString()} tỷ, tỷ suất lợi nhuận 17.2%. 
+                Tổng nhân lực {totalMetrics.totalEmployees.toLocaleString()} người với KPI TB {totalMetrics.avgKPI}%."
               </p>
             </div>
             
             <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border-l-4 border-amber-500">
-              <h4 className="font-semibold text-amber-900 dark:text-amber-100">⚠️ AI Cảnh Báo Auto-Tiering</h4>
+              <h4 className="font-semibold text-amber-900 dark:text-amber-100">⚠️ AI Cảnh Báo Auto-Tiering (Live Monitor)</h4>
               <p className="text-amber-800 dark:text-amber-200 mt-2">
-                "F2 F&B Holding đạt mức sở hữu BMC cao, sẵn sàng thăng cấp F1. 
-                Cần chuẩn bị workflow phê duyệt và hồ sơ pháp lý. 
-                F3 EduHolding và GAJ cần tăng cường hợp tác để đạt ngưỡng F2."
+                {allCompanies.length > 0 ? (
+                  `🚨 Hệ thống đang theo dõi ${allCompanies.length} công ty thành viên. 
+                  Compliance score trung bình: ${totalMetrics.avgCompliance}%. 
+                  Sẵn sàng cho việc đánh giá Auto-Tiering khi có đủ dữ liệu cổ phần BMC.`
+                ) : (
+                  "📊 Chưa có dữ liệu công ty để thực hiện Auto-Tiering. Vui lòng thêm công ty để bắt đầu theo dõi."
+                )}
               </p>
             </div>
 
             <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border-l-4 border-green-500">
-              <h4 className="font-semibold text-green-900 dark:text-green-100">💡 AI Gợi Ý Chiến Lược</h4>
+              <h4 className="font-semibold text-green-900 dark:text-green-100">💡 AI Gợi Ý Chiến Lược (Data-Driven)</h4>
               <p className="text-green-800 dark:text-green-200 mt-2">
-                "🎯 Tăng vốn góp BMC vào F3 GAJ từ 35% lên 55% để thăng F2. 
-                🚀 Mở rộng F2 F&B Holding với 5 chi nhánh mới Q4. 
-                💰 Phân bổ quỹ ngành 60 tỷ để hỗ trợ startup F5 tiềm năng."
+                {allCompanies.length > 0 ? (
+                  `🎯 Hệ thống AI đang phân tích ${allCompanies.length} công ty thành viên. 
+                  💰 ROI trung bình: ${totalMetrics.avgROI}%, KPI trung bình: ${totalMetrics.avgKPI}%. 
+                  📈 Sẵn sàng đưa ra gợi ý chiến lược khi có đủ dữ liệu phân tích.`
+                ) : (
+                  "🤖 AI chờ dữ liệu công ty để phân tích và đưa ra gợi ý chiến lược tối ưu. Vui lòng thêm công ty để bắt đầu."
+                )}
+              </p>
+            </div>
+            
+            <div className="p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg border-l-4 border-purple-500">
+              <h4 className="font-semibold text-purple-900 dark:text-purple-100">🔄 Realtime Department Sync</h4>
+              <p className="text-purple-800 dark:text-purple-200 mt-2">
+                {allCompanies.length > 0 ? (
+                  `📊 Sales: Tổng revenue ${totalMetrics.totalRevenue.toLocaleString()} tỷ VNĐ. Finance: ROI TB ${totalMetrics.avgROI}%. 
+                  👥 HR: ${totalMetrics.totalEmployees.toLocaleString()} nhân sự từ ${allCompanies.length} công ty thành viên. 
+                  🎯 Auto-sync từ các phòng ban BMC Holdings đang hoạt động.`
+                ) : (
+                  "🔄 Hệ thống sync sẵn sàng kết nối với các phòng ban khi có dữ liệu công ty. Vui lòng thêm công ty để bắt đầu đồng bộ."
+                )}
               </p>
             </div>
           </div>

@@ -18,60 +18,8 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
   const [activeView, setActiveView] = useState<"overview" | "f4-branch" | "f5-startup" | "auto-tiering" | "data-entry">("overview");
   const [selectedProject, setSelectedProject] = useState<any>(null);
 
-  // Mock data for F4-F5 projects với auto-tiering - RESET TO 0
-  const f4f5Projects = [
-    {
-      id: "F4_HN_001",
-      name: "Chi nhánh Hà Nội - BMC Food & Beverage", 
-      level: "F4",
-      type: "branch",
-      bmcOwnership: 0,
-      kpiAverage4Quarters: 0,
-      autoTieringStatus: "eligible",
-      nextTierTarget: "F3",
-      tieringProgress: 0,
-      monthlyRevenue: 0,
-      progressPercentage: 0,
-      currentStaff: 0,
-      riskLevel: "medium",
-      sector: "F&B Retail",
-      establishedDate: "2022-03-15"
-    },
-    {
-      id: "F5_CAFE_001", 
-      name: "Startup Cà phê 40NQ - BMC Ecosystem",
-      level: "F5",
-      type: "startup",
-      bmcOwnership: 0,
-      kpiAverage4Quarters: 0, 
-      autoTieringStatus: "approaching",
-      nextTierTarget: "F4",
-      tieringProgress: 0,
-      monthlyRevenue: 0,
-      progressPercentage: 0,
-      currentStaff: 0,
-      riskLevel: "medium",
-      sector: "F&B Specialty",
-      establishedDate: "2023-08-15"
-    },
-    {
-      id: "F4_SG_002",
-      name: "Chi nhánh Sài Gòn - BMC Retail",
-      level: "F4", 
-      type: "branch",
-      bmcOwnership: 0,
-      kpiAverage4Quarters: 0,
-      autoTieringStatus: "approaching",
-      nextTierTarget: "F3", 
-      tieringProgress: 0,
-      monthlyRevenue: 0,
-      progressPercentage: 0,
-      currentStaff: 0,
-      riskLevel: "low",
-      sector: "Retail Chain",
-      establishedDate: "2021-11-20"
-    }
-  ];
+  // Mock data for F4-F5 projects - đã xóa bỏ tất cả các dự án để khởi tạo mới
+  const f4f5Projects: any[] = [];
 
   const formatCurrency = (amount: number) => {
     if (amount >= 1000000000) {
@@ -252,7 +200,7 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {Math.round(f4f5Projects.reduce((sum, p) => sum + p.progressPercentage, 0) / f4f5Projects.length)}%
+              {f4f5Projects.length > 0 ? Math.round(f4f5Projects.reduce((sum, p) => sum + p.progressPercentage, 0) / f4f5Projects.length) : 0}%
             </div>
             <p className="text-xs text-muted-foreground">Trung bình</p>
           </CardContent>
@@ -289,7 +237,7 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
             <div className="space-y-2">
               <h4 className="font-medium text-sm">📊 Tiến độ trung bình</h4>
               <div className="text-2xl font-bold text-blue-600">
-                {Math.round(f4f5Projects.reduce((sum, p) => sum + p.tieringProgress, 0) / f4f5Projects.length)}%
+                {f4f5Projects.length > 0 ? Math.round(f4f5Projects.reduce((sum, p) => sum + p.tieringProgress, 0) / f4f5Projects.length) : 0}%
               </div>
               <p className="text-xs text-muted-foreground">Tất cả dự án</p>
             </div>

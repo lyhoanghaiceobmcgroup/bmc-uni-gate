@@ -71,6 +71,17 @@ export function AutoTieringSystem({ entityData }: AutoTieringSystemProps) {
   const [activeTab, setActiveTab] = useState("status");
   
   const currentTier = tieringRules[entityData.level as keyof typeof tieringRules];
+  
+  // Kiểm tra currentTier tồn tại để tránh lỗi undefined
+  if (!currentTier) {
+    return (
+      <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+        <p className="text-red-800 font-medium">⚠️ Lỗi: Không tìm thấy quy tắc cho cấp {entityData.level}</p>
+        <p className="text-red-600 text-sm mt-1">Vui lòng kiểm tra lại dữ liệu đầu vào.</p>
+      </div>
+    );
+  }
+  
   const equityProgress = (entityData.bmcOwnership / currentTier.equityThreshold) * 100;
   const kpiProgress = (entityData.kpiAverage4Quarters / currentTier.kpiThreshold) * 100;
   

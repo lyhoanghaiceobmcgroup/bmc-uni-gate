@@ -63,16 +63,16 @@ const departments = [
     description: "Quản lý cổ phần và quan hệ nhà đầu tư",
     icon: PieChart,
     manager: "Lý Hoàng Hải",
-    members: 4,
-    kpi: 95,
-    tasks: 8,
-    color: "text-yellow-600",
-    bgColor: "bg-yellow-50 dark:bg-yellow-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      totalShareholders: 4,
-      totalCapital: "60B VNĐ",
-      bmcEquity: "Kiểm soát",
-      dividendPaid: "Đã chi trả"
+      totalShareholders: 0,
+      totalCapital: "0 VNĐ",
+      bmcEquity: "Chưa có dữ liệu",
+      dividendPaid: "Chưa có dữ liệu"
     },
     aiAgent: "Shareholder Agent",
     features: ["Tỷ lệ cổ phần", "Quyền biểu quyết", "Lịch sử tăng/giảm vốn", "Cổ tức"]
@@ -83,16 +83,16 @@ const departments = [
     description: "Bán hàng, CRM và quan hệ khách hàng",
     icon: TrendingUp,
     manager: "Nguyễn Văn A",
-    members: 8,
-    kpi: 94,
-    tasks: 18,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50 dark:bg-blue-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      monthlyRevenue: "1.8B VNĐ",
-      conversionRate: "Tốt",
-      newCustomers: 98,
-      salesPipeline: "Mạnh"
+      monthlyRevenue: "0 VNĐ",
+      conversionRate: "Chưa có dữ liệu",
+      newCustomers: 0,
+      salesPipeline: "Chưa có dữ liệu"
     },
     aiAgent: "Sales Agent",
     features: ["CRM", "Pipeline bán hàng", "Quản lý khách hàng", "Dự báo doanh thu"]
@@ -103,16 +103,16 @@ const departments = [
     description: "Marketing, truyền thông và xây dựng thương hiệu",
     icon: Briefcase,
     manager: "Trần Thị M",
-    members: 6,
-    kpi: 90,
-    tasks: 12,
-    color: "text-pink-600",
-    bgColor: "bg-pink-50 dark:bg-pink-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      campaignROI: "Hiệu quả cao",
-      brandAwareness: "Tăng 25%",
-      leadGeneration: 58,
-      socialEngagement: "Tốt"
+      campaignROI: "Chưa có dữ liệu",
+      brandAwareness: "0%",
+      leadGeneration: 0,
+      socialEngagement: "Chưa có dữ liệu"
     },
     aiAgent: "Marketing Agent",
     features: ["Chiến dịch Marketing", "Quản lý thương hiệu", "Social Media", "Content Marketing"]
@@ -123,16 +123,16 @@ const departments = [
     description: "Quản lý tài chính, ngân sách và dòng tiền doanh nghiệp",
     icon: DollarSign,
     manager: "Trần Thị B",
-    members: 5,
-    kpi: 92,
-    tasks: 12,
-    color: "text-green-600",
-    bgColor: "bg-green-50 dark:bg-green-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      totalBudget: "2.5B VNĐ",
-      cashFlow: "+180M VNĐ",
-      investmentROI: "15.8%",
-      liquidityRatio: "2.4"
+      totalBudget: "0 VNĐ",
+      cashFlow: "0 VNĐ",
+      investmentROI: "0%",
+      liquidityRatio: "0"
     },
     aiAgent: "Finance Agent",
     features: ["Quản lý ngân sách", "Dự báo dòng tiền", "Phân tích tài chính", "Báo cáo P&L"]
@@ -143,16 +143,16 @@ const departments = [
     description: "Kế toán tổng hợp, thuế và báo cáo tài chính",
     icon: FileText,
     manager: "Nguyễn Văn K",
-    members: 4,
-    kpi: 95,
-    tasks: 8,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      monthlyClosing: "Đúng hạn",
-      taxCompliance: "100%",
-      receivables: "320M VNĐ",
-      payables: "180M VNĐ"
+      monthlyClosing: "Chưa có dữ liệu",
+      taxCompliance: "0%",
+      receivables: "0 VNĐ",
+      payables: "0 VNĐ"
     },
     aiAgent: "Accounting Agent",
     features: ["Kế toán đa sổ", "Quản lý hóa đơn", "Báo cáo thuế", "Kiểm toán nội bộ"]
@@ -163,16 +163,16 @@ const departments = [
     description: "Quản lý nhân lực, tuyển dụng và quan hệ lao động",
     icon: Users,
     manager: "Lê Văn C",
-    members: 4,
-    kpi: 96,
-    tasks: 14,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50 dark:bg-purple-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      totalEmployees: 1247,
-      attendanceRate: "96.5%",
-      monthlySalary: "285M VNĐ",
-      turnoverRate: "2.1%"
+      totalEmployees: 0,
+      attendanceRate: "0%",
+      monthlySalary: "0 VNĐ",
+      turnoverRate: "0%"
     },
     aiAgent: "HR Agent",
     features: ["Hồ sơ nhân sự", "Chấm công", "Tuyển dụng ATS", "Quản lý lương"]
@@ -183,16 +183,16 @@ const departments = [
     description: "Phát triển năng lực và đào tạo nhân viên",
     icon: GraduationCap,
     manager: "Phạm Thị L",
-    members: 3,
-    kpi: 92,
-    tasks: 8,
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      activePrograms: 28,
-      completionRate: "89.3%",
-      trainingBudget: "120M VNĐ",
-      skillGrowth: "+15.2%"
+      activePrograms: 0,
+      completionRate: "0%",
+      trainingBudget: "0 VNĐ",
+      skillGrowth: "0%"
     },
     aiAgent: "Training Agent",
     features: ["Chương trình đào tạo", "Đánh giá năng lực", "E-learning", "Chứng chỉ"]
@@ -203,16 +203,16 @@ const departments = [
     description: "Quản lý sản xuất, dây chuyền và chất lượng sản phẩm",
     icon: Factory,
     manager: "Phạm Thị D",
-    members: 12,
-    kpi: 88,
-    tasks: 18,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50 dark:bg-orange-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      dailyOutput: "15,847 sản phẩm",
-      efficiency: "92.3%",
-      qualityRate: "98.7%",
-      downtime: "2.1%"
+      dailyOutput: "0 sản phẩm",
+      efficiency: "0%",
+      qualityRate: "0%",
+      downtime: "0%"
     },
     aiAgent: "Production Agent",
     features: ["Quản lý dây chuyền", "Kiểm soát chất lượng", "Lập kế hoạch sản xuất", "Bảo trì thiết bị"]
@@ -223,16 +223,16 @@ const departments = [
     description: "Quản lý kho hàng, logistics và chuỗi cung ứng",
     icon: Warehouse,
     manager: "Lê Văn K",
-    members: 8,
-    kpi: 91,
-    tasks: 14,
-    color: "text-amber-600",
-    bgColor: "bg-amber-50 dark:bg-amber-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      currentStock: "2.8B VNĐ",
-      stockTurnover: "8.5 lần/năm",
-      inboundRate: "96.2%",
-      outboundRate: "94.8%"
+      currentStock: "0 VNĐ",
+      stockTurnover: "0 lần/năm",
+      inboundRate: "0%",
+      outboundRate: "0%"
     },
     aiAgent: "Warehouse Agent",
     features: ["Kho QR/Barcode", "Logistics", "Dự báo nhu cầu", "Quản lý nhà cung cấp"]
@@ -243,16 +243,16 @@ const departments = [
     description: "Nghiên cứu phát triển và chiến lược doanh nghiệp",
     icon: Lightbulb,
     manager: "Hoàng Văn E",
-    members: 5,
-    kpi: 98,
-    tasks: 12,
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      activeProjects: 8,
-      rdBudget: "500M VNĐ",
-      innovationScore: "Xuất sắc",
-      strategicInitiatives: 5
+      activeProjects: 0,
+      rdBudget: "0 VNĐ",
+      innovationScore: "Chưa có dữ liệu",
+      strategicInitiatives: 0
     },
     aiAgent: "Strategy Agent",
     features: ["Sáng kiến đổi mới", "Kế hoạch 3-5 năm", "Phân tích SWOT", "Xu hướng ngành"]
@@ -263,16 +263,16 @@ const departments = [
     description: "Quản lý hạ tầng CNTT, phần mềm, bảo mật và dữ liệu",
     icon: Monitor,
     manager: "Nguyễn Văn F",
-    members: 15,
-    kpi: 96,
-    tasks: 28,
-    color: "text-cyan-600",
-    bgColor: "bg-cyan-50 dark:bg-cyan-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      uptime: "Ổn định",
-      servers: "24/25",
-      securityAlerts: 3,
-      storage: "847GB/2TB"
+      uptime: "Chưa có dữ liệu",
+      servers: "0/0",
+      securityAlerts: 0,
+      storage: "0GB/0TB"
     },
     aiAgent: "Tech Agent",
     features: ["Cloud Infrastructure", "Security RBAC", "API Management", "AI/ERP Systems"]
@@ -283,16 +283,16 @@ const departments = [
     description: "Đảm bảo pháp lý & tuân thủ, quản lý hợp đồng và rủi ro",
     icon: Scale,
     manager: "Luật sư Trần G",
-    members: 8,
-    kpi: 94,
-    tasks: 16,
-    color: "text-amber-600",
-    bgColor: "bg-amber-50 dark:bg-amber-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      activeContracts: 1847,
-      expiringSoon: 23,
-      disputes: 5,
-      complianceScore: "Tốt"
+      activeContracts: 0,
+      expiringSoon: 0,
+      disputes: 0,
+      complianceScore: "Chưa có dữ liệu"
     },
     aiAgent: "Legal Agent",
     features: ["Contract Management", "Compliance Tracking", "Legal Risk Management", "Document Archive"]
@@ -303,16 +303,16 @@ const departments = [
     description: "Quản lý danh mục đầu tư, quỹ vốn, M&A và cổ phần",
     icon: TrendingUp,
     manager: "Đào Thị H",
-    members: 12,
-    kpi: 97,
-    tasks: 34,
-    color: "text-emerald-600",
-    bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
+    members: 0,
+    kpi: 0,
+    tasks: 0,
+    color: "text-gray-100",
+    bgColor: "bg-gray-900 dark:bg-gray-950/20",
     metrics: {
-      totalAUM: "2,850B VNĐ",
-      portfolioROI: "Tích cực",
-      activeDeals: 47,
-      dryPowder: "850B VNĐ"
+      totalAUM: "0 VNĐ",
+      portfolioROI: "Chưa có dữ liệu",
+      activeDeals: 0,
+      dryPowder: "0 VNĐ"
     },
     aiAgent: "Investment Agent",
     features: ["Portfolio Management", "Fund Management", "M&A Pipeline", "Performance Analytics"]
@@ -339,6 +339,8 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDraft, setIsDraft] = useState(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [departmentData, setDepartmentData] = useState(departments);
   const { user } = useAuth();
 
   // Load departments from database
@@ -346,29 +348,78 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
     loadDepartments();
   }, [user]);
 
+  const resetAllDepartmentData = () => {
+    const resetDepartments = departmentData.map(dept => ({
+      ...dept,
+      members: 0,
+      kpi: 0,
+      tasks: 0,
+      metrics: Object.keys(dept.metrics).reduce((acc, key) => {
+        const value = dept.metrics[key];
+        if (typeof value === 'string' && value.includes('VNĐ')) {
+          acc[key] = '0 VNĐ';
+        } else if (typeof value === 'string' && value.includes('%')) {
+          acc[key] = '0%';
+        } else if (typeof value === 'number') {
+          acc[key] = 0;
+        } else if (typeof value === 'string' && !isNaN(parseFloat(value))) {
+          acc[key] = '0';
+        } else {
+          acc[key] = value; // Keep non-numeric values as is
+        }
+        return acc;
+      }, {} as any)
+    }));
+    
+    setDepartmentData(resetDepartments);
+  };
+
   const loadDepartments = async () => {
     if (!user) return;
     
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // First get user's organizations
+      const { data: userOrgs, error: userOrgsError } = await supabase
+        .from('user_organization_roles')
+        .select('organization_id')
+        .eq('user_id', user.id);
+
+      if (userOrgsError) throw userOrgsError;
+
+      const orgIds = userOrgs?.map(org => org.organization_id) || [];
+
+      if (orgIds.length === 0) {
+        setRealDepartments([]);
+        return;
+      }
+
+      // Get departments without join to avoid relationship issues
+      const { data: departmentsData, error: departmentsError } = await supabase
         .from('departments')
-        .select(`
-          *,
-          organizations!inner(
-            id,
-            name,
-            level
-          ),
-          user_organization_roles!inner(
-            role
-          )
-        `)
-        .eq('user_organization_roles.user_id', user.id);
+        .select('*')
+        .in('organization_id', orgIds);
 
-      if (error) throw error;
+      if (departmentsError) throw departmentsError;
 
-      setRealDepartments(data || []);
+      // Get organizations separately
+      const { data: organizationsData, error: organizationsError } = await supabase
+        .from('organizations')
+        .select('id, name, level')
+        .in('id', orgIds);
+
+      if (organizationsError) throw organizationsError;
+
+      // Combine data manually
+      const combinedData = departmentsData?.map(dept => {
+        const org = organizationsData?.find(o => o.id === dept.organization_id);
+        return {
+          ...dept,
+          organizations: org || null
+        };
+      }) || [];
+
+      setRealDepartments(combinedData);
     } catch (error) {
       console.error('Error loading departments:', error);
       toast.error("Lỗi tải danh sách phòng ban");
@@ -745,6 +796,13 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
           </p>
         </div>
         <div className="flex space-x-2">
+          <Button 
+            variant="destructive" 
+            onClick={() => setIsResetModalOpen(true)}
+            className="bg-red-600 hover:bg-red-700"
+          >
+            🔄 Reset Dữ Liệu
+          </Button>
           <Button variant="outline">
             <Target className="h-4 w-4 mr-2" />
             Thiết lập KPI
@@ -818,38 +876,54 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Phòng ban từ doanh nghiệp mới tạo</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {realDepartments.map((dept) => (
-              <Card key={dept.id} className="border-2 border-green-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      🏢 {dept.name}
-                    </CardTitle>
-                    <Badge variant="secondary">{dept.organizations?.level || 'N/A'}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Tổ chức:</span>
-                      <span className="text-primary">{dept.organizations?.name || 'N/A'}</span>
+            {realDepartments.map((dept, index) => {
+              // Tạo mảng màu sắc đồng bộ với departmentData (hỗ trợ dark mode)
+              const colorSchemes = [
+                { color: "text-blue-600", bgColor: "bg-blue-50 dark:bg-blue-950/20", borderColor: "border-blue-200 dark:border-blue-800" },
+                { color: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950/20", borderColor: "border-green-200 dark:border-green-800" },
+                { color: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950/20", borderColor: "border-purple-200 dark:border-purple-800" },
+                { color: "text-orange-600", bgColor: "bg-orange-50 dark:bg-orange-950/20", borderColor: "border-orange-200 dark:border-orange-800" },
+                { color: "text-pink-600", bgColor: "bg-pink-50 dark:bg-pink-950/20", borderColor: "border-pink-200 dark:border-pink-800" },
+                { color: "text-indigo-600", bgColor: "bg-indigo-50 dark:bg-indigo-950/20", borderColor: "border-indigo-200 dark:border-indigo-800" },
+                { color: "text-cyan-600", bgColor: "bg-cyan-50 dark:bg-cyan-950/20", borderColor: "border-cyan-200 dark:border-cyan-800" },
+                { color: "text-amber-600", bgColor: "bg-amber-50 dark:bg-amber-950/20", borderColor: "border-amber-200 dark:border-amber-800" },
+                { color: "text-emerald-600", bgColor: "bg-emerald-50 dark:bg-emerald-950/20", borderColor: "border-emerald-200 dark:border-emerald-800" }
+              ];
+              const colorScheme = colorSchemes[index % colorSchemes.length];
+              
+              return (
+                <Card key={dept.id} className={`border-2 ${colorScheme.borderColor} ${colorScheme.bgColor} hover:shadow-lg transition-all duration-300`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className={`text-lg flex items-center gap-2 ${colorScheme.color}`}>
+                        🏢 {dept.name}
+                      </CardTitle>
+                      <Badge variant="secondary">{dept.organizations?.level || 'N/A'}</Badge>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Mô tả:</span>
-                      <span className="text-muted-foreground text-xs">{dept.description || 'Chưa có mô tả'}</span>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Tổ chức:</span>
+                        <span className="text-primary">{dept.organizations?.name || 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Mô tả:</span>
+                        <span className="text-muted-foreground text-xs">{dept.description || 'Chưa có mô tả'}</span>
+                      </div>
                     </div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="w-full mt-4"
-                  >
-                    <Users className="w-4 h-4 mr-2" />
-                    Quản lý phòng ban
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full mt-4"
+                    >
+                      <Users className="w-4 h-4 mr-2" />
+                      Quản lý phòng ban
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </div>
       )}
@@ -857,545 +931,72 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
       {/* Department Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* 6 Department Cards */}
-        <Card 
-          key="shareholder" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("shareholder")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                📌 Cổ đông
-              </CardTitle>
-              <Badge variant="default">AI Shareholder</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">4</div>
-                <p className="text-xs text-muted-foreground">Cổ đông</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">80%</div>
-                <p className="text-xs text-muted-foreground">Sở hữu BMC</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Vốn điều lệ</span>
-                <span className="text-primary">60B VNĐ</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Cổ tức</span>
-                <span className="text-primary">15%</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
+        {departmentData.map((dept) => {
+          const IconComponent = dept.icon;
+          // Tạo border color tương ứng với màu sắc của từng phòng ban (hỗ trợ dark mode)
+          const getBorderColor = (color: string) => {
+            if (color.includes('yellow')) return 'border-yellow-200 dark:border-yellow-800';
+            if (color.includes('blue')) return 'border-blue-200 dark:border-blue-800';
+            if (color.includes('pink')) return 'border-pink-200 dark:border-pink-800';
+            if (color.includes('green')) return 'border-green-200 dark:border-green-800';
+            if (color.includes('emerald')) return 'border-emerald-200 dark:border-emerald-800';
+            if (color.includes('purple')) return 'border-purple-200 dark:border-purple-800';
+            if (color.includes('indigo')) return 'border-indigo-200 dark:border-indigo-800';
+            if (color.includes('orange')) return 'border-orange-200 dark:border-orange-800';
+            if (color.includes('amber')) return 'border-amber-200 dark:border-amber-800';
+            if (color.includes('cyan')) return 'border-cyan-200 dark:border-cyan-800';
+            return 'border-gray-200 dark:border-gray-800';
+          };
+          const borderColor = getBorderColor(dept.color);
+          
+          return (
+            <Card 
+              key={dept.id}
+              className={`cursor-pointer hover:shadow-lg transition-all duration-300 border-2 ${borderColor} hover:border-primary/20 ${dept.bgColor}`}
+              onClick={() => handleCardClick(dept.id === 1 ? "shareholder" : dept.name.toLowerCase())}
             >
-              <PieChart className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="sales" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("sales")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                📈 Kinh doanh
-              </CardTitle>
-              <Badge variant="default">AI Sales</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">1.8B</div>
-                <p className="text-xs text-muted-foreground">Doanh thu tháng</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">94%</div>
-                <p className="text-xs text-muted-foreground">KPI</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Khách hàng mới</span>
-                <span className="text-primary">98</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Pipeline</span>
-                <span className="text-primary">Mạnh</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="marketing" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("marketing")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                📢 Marketing
-              </CardTitle>
-              <Badge variant="default">AI Marketing</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">90%</div>
-                <p className="text-xs text-muted-foreground">KPI</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">+25%</div>
-                <p className="text-xs text-muted-foreground">Brand Awareness</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Lead Generation</span>
-                <span className="text-primary">58</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Campaign ROI</span>
-                <span className="text-primary">Hiệu quả cao</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Briefcase className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="finance" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("finance-accounting")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                💰 Tài chính
-              </CardTitle>
-              <Badge variant="default">AI Finance</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">2.5B</div>
-                <p className="text-xs text-muted-foreground">Ngân sách</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">+180M</div>
-                <p className="text-xs text-muted-foreground">Dòng tiền</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>ROI đầu tư</span>
-                <span className="text-primary">15.8%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Tỷ lệ thanh khoản</span>
-                <span className="text-primary">2.4</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <DollarSign className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="accounting" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("accounting")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                📊 Kế toán
-              </CardTitle>
-              <Badge variant="default">AI Accounting</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">320M</div>
-                <p className="text-xs text-muted-foreground">Công nợ phải thu</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">180M</div>
-                <p className="text-xs text-muted-foreground">Công nợ phải trả</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Đóng sổ tháng</span>
-                <span className="text-primary">Đúng hạn</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Tuân thủ thuế</span>
-                <span className="text-primary">100%</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="hr" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("hr")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                👥 Nhân sự
-              </CardTitle>
-              <Badge variant="default">AI HR</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">1,247</div>
-                <p className="text-xs text-muted-foreground">Nhân viên</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">96.5%</div>
-                <p className="text-xs text-muted-foreground">Chấm công</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Tuyển dụng</span>
-                <span className="text-primary">24 vị trí</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Lương thưởng</span>
-                <span>285M VNĐ</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="training" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("training")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                🎓 Đào tạo
-              </CardTitle>
-              <Badge variant="default">AI Training</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">28</div>
-                <p className="text-xs text-muted-foreground">Chương trình</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">89.3%</div>
-                <p className="text-xs text-muted-foreground">Hoàn thành</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Ngân sách</span>
-                <span className="text-primary">120M VNĐ</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Tăng trưởng KN</span>
-                <span>+15.2%</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <GraduationCap className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="production-supply" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("production-supply")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                ⚙️ Sản xuất – Kho vận
-              </CardTitle>
-              <Badge variant="default">AI Supply Chain</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">15,847</div>
-                <p className="text-xs text-muted-foreground">Sản lượng/ngày</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">4.2B</div>
-                <p className="text-xs text-muted-foreground">Giá trị kho</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Hiệu suất</span>
-                <span className="text-primary">88%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Chất lượng</span>
-                <span className="text-primary">96.8%</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Factory className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="strategy-rd" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("strategy-rd")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                🚀 Chiến lược – R&D
-              </CardTitle>
-              <Badge variant="default">AI Strategy</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">28</div>
-                <p className="text-xs text-muted-foreground">Dự án chiến lược</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">23.8%</div>
-                <p className="text-xs text-muted-foreground">Thị phần</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>KPI chiến lược</span>
-                <span className="text-primary">72.5%</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Sáng kiến</span>
-                <span className="text-primary">247 ý tưởng</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Lightbulb className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="technology-it" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("technology-it")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                💻 Công nghệ – Hạ tầng số
-              </CardTitle>
-              <Badge variant="default">AI Tech</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">99.8%</div>
-                <p className="text-xs text-muted-foreground">Uptime</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">24/25</div>
-                <p className="text-xs text-muted-foreground">Servers</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Security alerts</span>
-                <span className="text-orange-600">3</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Storage used</span>
-                <span className="text-primary">847GB</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Monitor className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="legal-compliance" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("legal-compliance")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                ⚖️ Pháp chế – Tuân thủ
-              </CardTitle>
-              <Badge variant="default">AI Legal</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">1,847</div>
-                <p className="text-xs text-muted-foreground">Hợp đồng</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">94%</div>
-                <p className="text-xs text-muted-foreground">Compliance</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Sắp hết hạn</span>
-                <span className="text-orange-600">23</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Tranh chấp</span>
-                <span className="text-red-600">5 cases</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <Scale className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card 
-          key="investment-capital" 
-          className="cursor-pointer hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20"
-          onClick={() => handleCardClick("investment-capital")}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg flex items-center gap-2">
-                💼 Đầu tư – Vốn
-              </CardTitle>
-              <Badge variant="default">AI Investment</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">2,850B</div>
-                <p className="text-xs text-muted-foreground">AUM</p>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold">+24.8%</div>
-                <p className="text-xs text-muted-foreground">ROI</p>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Active deals</span>
-                <span className="text-primary">47</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Dry powder</span>
-                <span className="text-primary">850B VNĐ</span>
-              </div>
-            </div>
-            <Button 
-              size="sm" 
-              variant="outline" 
-              className="w-full mt-4"
-            >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Xem chi tiết
-            </Button>
-          </CardContent>
-        </Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className={`text-lg flex items-center gap-2 ${dept.color}`}>
+                    <IconComponent className="w-5 h-5" />
+                    {dept.name}
+                  </CardTitle>
+                  <Badge variant="default">{dept.aiAgent}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{dept.members}</div>
+                    <p className="text-xs text-muted-foreground">Thành viên</p>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold">{dept.kpi}%</div>
+                    <p className="text-xs text-muted-foreground">KPI</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Quản lý:</span>
+                    <span className="text-primary">{dept.manager}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Tasks:</span>
+                    <span className="text-primary">{dept.tasks}</span>
+                  </div>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="w-full mt-4"
+                >
+                  <IconComponent className="w-4 h-4 mr-2" />
+                  Xem chi tiết
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Department Tools */}
@@ -1454,7 +1055,7 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
                     <Select 
                       value={selectedDepartment?.id?.toString() || ''} 
                       onValueChange={(value) => {
-                        const dept = departments.find(d => d.id.toString() === value) || 
+                        const dept = departmentData.find(d => d.id.toString() === value) || 
                                    realDepartments.find(d => d.id.toString() === value);
                         setSelectedDepartment(dept);
                       }}
@@ -1463,7 +1064,7 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
                         <SelectValue placeholder="Chọn phòng ban để báo cáo" />
                       </SelectTrigger>
                       <SelectContent>
-                        {departments.map((dept) => (
+                        {departmentData.map((dept) => (
                           <SelectItem key={dept.id} value={dept.id.toString()}>
                             {dept.name}
                           </SelectItem>
@@ -1671,6 +1272,41 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
           </CardContent>
         </Card>
       </div>
+
+      {/* Reset Data Confirmation Modal */}
+      <Dialog open={isResetModalOpen} onOpenChange={setIsResetModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-red-600">⚠️ Xác nhận Reset Dữ Liệu</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Bạn có chắc chắn muốn reset toàn bộ số liệu của tất cả phòng ban về 0?
+            </p>
+            <p className="text-sm text-red-600 font-medium">
+              ⚠️ Hành động này không thể hoàn tác!
+            </p>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsResetModalOpen(false)}
+            >
+              Hủy
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => {
+                resetAllDepartmentData();
+                setIsResetModalOpen(false);
+                toast.success("Đã reset toàn bộ số liệu phòng ban về 0");
+              }}
+            >
+              Xác nhận Reset
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

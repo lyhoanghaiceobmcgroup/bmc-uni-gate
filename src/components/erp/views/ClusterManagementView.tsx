@@ -50,15 +50,14 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
   const [viewMode, setViewMode] = useState("overview");
   const navigate = useNavigate();
 
-  // Mockup Data F1 - Cụm Ngành theo yêu cầu chi tiết
+  // Mockup Data F1 - Cụm Ngành đã được reset về 0
   const clusterData = [
     {
       id: "f1-fnb",
       name: "🍔 F1 - Cụm F&B",
       industry: "Food & Beverage",
       icon: Coffee,
-      bmcOwnership: 80,
-      // Dữ liệu tài chính Q2
+      bmcOwnership: 0,
       revenue: 0, // tỷ VNĐ
       expenses: 0,
       profit: 0,
@@ -67,17 +66,11 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       complianceScore: 0,
       sectorFund: 0, // tỷ VNĐ
       growth: 0,
-      // Công ty thành viên
-      memberCompanies: [
-        { name: "BMC F&B Holding (F2)", level: "F2", ownership: "65%", branches: 18 },
-        { name: "RAN Café (F3)", level: "F3", ownership: "100%", branches: 18 },
-        { name: "ColdBrew Vietnam (F5)", level: "F5", ownership: "20%", branches: 3 }
-      ],
-      // AI Insights
+      memberCompanies: [],
       aiInsights: {
-        strengths: "Doanh thu dẫn đầu 420 tỷ, mạng lưới rộng với 18 chi nhánh",
-        warnings: "DOH tăng 5 ngày, cần tối ưu supply chain",
-        recommendations: "Mở rộng 5 chi nhánh mới Q3, đầu tư cold chain logistics"
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành F&B"
       }
     },
     {
@@ -85,36 +78,7 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "💻 F1 - Cụm Công nghệ",
       industry: "Technology",
       icon: Laptop,
-      bmcOwnership: 85,
-      // Dữ liệu tài chính Q2
-      revenue: 0, 
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
-      growth: 0, // Tăng trưởng cao nhất
-      // Công ty thành viên
-      memberCompanies: [
-        { name: "OneBMC Technology (F2)", level: "F2", ownership: "80%", branches: 8 },
-        { name: "Solubiz (F3)", level: "F3", ownership: "70%", branches: 12 },
-        { name: "MineGPT Startup (F5)", level: "F5", ownership: "25%", branches: 2 }
-      ],
-      // AI Insights
-      aiInsights: {
-        strengths: "Tăng trưởng mạnh 25%, ROI cao, đội ngũ tech talent chất lượng",
-        warnings: "Cạnh tranh gay gắt từ BigTech, cần đầu tư R&D nhiều hơn",
-        recommendations: "Tăng đầu tư AI/ML 30%, M&A startup blockchain, mở văn phòng Singapore"
-      }
-    },
-    {
-      id: "f1-edu",
-      name: "🎓 F1 - Cụm Giáo dục",
-      industry: "Education",
-      icon: GraduationCap,
-      bmcOwnership: 80,
-      // Dữ liệu tài chính Q2
+      bmcOwnership: 0,
       revenue: 0,
       expenses: 0,
       profit: 0,
@@ -122,18 +86,201 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       avgKPI: 0,
       complianceScore: 0,
       sectorFund: 0,
-      growth: 0, // Chậm nhất
-      // Công ty thành viên
-      memberCompanies: [
-        { name: "EduHolding JSC (F3)", level: "F3", ownership: "40%", branches: 15 },
-        { name: "Talky English (F5)", level: "F5", ownership: "15%", branches: 8 },
-        { name: "EraHouse Education (F4)", level: "F4", ownership: "60%", branches: 22 }
-      ],
-      // AI Insights
+      growth: 0,
+      memberCompanies: [],
       aiInsights: {
-        strengths: "Thương hiệu mạnh trong giáo dục, đội ngũ giáo viên chất lượng",
-        warnings: "Tăng trưởng chậm 8%, cạnh tranh từ EdTech platforms",
-        recommendations: "Chuyển đổi số mạnh mẽ, đầu tư AI personalizing, online learning"
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Công nghệ"
+      }
+    },
+    {
+      id: "f1-edu",
+      name: "🎓 F1 - Cụm Giáo dục",
+      industry: "Education",
+      icon: GraduationCap,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Giáo dục"
+      }
+    },
+    {
+      id: "f1-finance",
+      name: "🏦 F1 - Cụm Tài chính",
+      industry: "Financial Services",
+      icon: DollarSign,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Tài chính"
+      }
+    },
+    {
+      id: "f1-manufacturing",
+      name: "🏭 F1 - Cụm Sản xuất",
+      industry: "Manufacturing",
+      icon: Factory,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Sản xuất"
+      }
+    },
+    {
+      id: "f1-retail",
+      name: "🛒 F1 - Cụm Bán lẻ",
+      industry: "Retail & Consumer",
+      icon: Package,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Bán lẻ"
+      }
+    },
+    {
+      id: "f1-healthcare",
+      name: "🏥 F1 - Cụm Y tế",
+      industry: "Healthcare",
+      icon: Target,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Y tế"
+      }
+    },
+    {
+      id: "f1-realestate",
+      name: "🏢 F1 - Cụm Bất động sản",
+      industry: "Real Estate",
+      icon: Building2,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Bất động sản"
+      }
+    },
+    {
+      id: "f1-logistics",
+      name: "🚛 F1 - Cụm Logistics",
+      industry: "Logistics & Supply Chain",
+      icon: Package,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Logistics"
+      }
+    },
+    {
+      id: "f1-agriculture",
+      name: "🌾 F1 - Cụm Nông nghiệp",
+      industry: "Agriculture & Food Processing",
+      icon: Factory,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Nông nghiệp"
+      }
+    },
+    {
+      id: "f1-energy",
+      name: "⚡ F1 - Cụm Năng lượng",
+      industry: "Energy & Utilities",
+      icon: Zap,
+      bmcOwnership: 0,
+      revenue: 0,
+      expenses: 0,
+      profit: 0,
+      employees: 0,
+      avgKPI: 0,
+      complianceScore: 0,
+      sectorFund: 0,
+      growth: 0,
+      memberCompanies: [],
+      aiInsights: {
+        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
+        warnings: "Chưa có dữ liệu hoạt động",
+        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Năng lượng"
       }
     }
   ];

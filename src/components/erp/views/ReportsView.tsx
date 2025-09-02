@@ -370,33 +370,23 @@ export function ReportsView({ organizations }: ReportsViewProps) {
       const { data: consolidatedData, error: consolidatedError } = await supabase
         .from('consolidated_reports')
         .select('*')
-        .eq('user_id', user.id)
+        .eq('created_by', user.id)
         .order('created_at', { ascending: false });
 
       if (consolidatedError) throw consolidatedError;
 
-      // Load department reports
-      const { data: departmentData, error: departmentError } = await supabase
-        .from('department_reports')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      // Load department reports (using mock data as tables don't exist yet)
+      const departmentData = [];
+      const departmentError = null;
 
-      if (departmentError) throw departmentError;
-
-      // Load company reports
-      const { data: companyData, error: companyError } = await supabase
-        .from('company_reports')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (companyError) throw companyError;
+      // Load company reports (using mock data as tables don't exist yet)
+      const companyData = [];
+      const companyError = null;
 
       // Use mock data as fallback if no real data exists
       const finalConsolidatedData = consolidatedData?.length ? consolidatedData : [];
       const finalDepartmentData = departmentData?.length ? departmentData : Object.values(mockDepartmentReports);
-      const finalCompanyData = companyData?.length ? companyData : mockReportData;
+      const finalCompanyData = companyData?.length ? companyData : (Array.isArray(mockReportData) ? mockReportData : Object.values(mockReportData));
 
       setConsolidatedReports(finalConsolidatedData);
       setDepartmentReports(finalDepartmentData);
