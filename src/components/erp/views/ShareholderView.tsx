@@ -121,7 +121,7 @@ const mockShareholders = [
 export function ShareholderView({ onBack }: ShareholderViewProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [shareholders, setShareholders] = useState(mockShareholders);
+  const [shareholders, setShareholders] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedShareholder, setSelectedShareholder] = useState<any>(null);
   const [filterType, setFilterType] = useState("all");
@@ -130,6 +130,15 @@ export function ShareholderView({ onBack }: ShareholderViewProps) {
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [showPermissionDialog, setShowPermissionDialog] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>();
+
+  // Function to reset all shareholder data to 0
+  const resetShareholderData = () => {
+    setShareholders([]);
+    setSelectedShareholder(null);
+    setSearchTerm("");
+    setFilterType("all");
+    toast.success("Đã reset tất cả dữ liệu cổ đông về 0");
+  };
 
   const filteredShareholders = shareholders.filter(shareholder => {
     const matchesSearch = shareholder.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -337,6 +346,11 @@ export function ShareholderView({ onBack }: ShareholderViewProps) {
         
         {/* Action Buttons */}
         <div className="flex items-center space-x-3">
+          <Button variant="destructive" onClick={resetShareholderData}>
+            <Trash2 className="h-4 w-4 mr-2" />
+            Reset dữ liệu
+          </Button>
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
@@ -864,11 +878,30 @@ export function ShareholderView({ onBack }: ShareholderViewProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {filteredShareholders.map((shareholder) => (
-                  <div 
-                    key={shareholder.id} 
-                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                  >
+                {filteredShareholders.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Không có dữ liệu cổ đông</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Danh sách cổ đông đã được reset về 0. Bạn có thể thêm cổ đông mới hoặc nhập dữ liệu từ file.
+                    </p>
+                    <div className="flex justify-center space-x-2">
+                      <Button onClick={() => setShowAddDialog(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Thêm cổ đông mới
+                      </Button>
+                      <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+                        <Upload className="h-4 w-4 mr-2" />
+                        Nhập từ file
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  filteredShareholders.map((shareholder) => (
+                    <div 
+                      key={shareholder.id} 
+                      className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                    >
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-4">
                         <div className="h-12 w-12 bg-primary/10 rounded-full flex items-center justify-center">
@@ -969,7 +1002,8 @@ export function ShareholderView({ onBack }: ShareholderViewProps) {
                       </div>
                     </div>
                   </div>
-                ))}
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>

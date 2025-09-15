@@ -1,0 +1,22 @@
+{
+  "company_name": "Công ty ABC",
+  "report_date": "2025-01-09",
+  "department": "Tài chính",
+  "financial_data": {
+    "revenue": 1500000000,
+    "expenses": 1200000000,
+    "profit": 300000000,
+    "cash_flow": 250000000,
+    "accounts_receivable": 800000000,
+    "accounts_payable": 600000000
+  },
+  "kpi_metrics": {
+    "profit_margin": 20,
+    "roi": 15.5,
+    "debt_ratio": 0.4,
+    "current_ratio": 1.8
+  },
+  "notes": "Báo cáo tài chính hàng ngày - Tăng trưởng ổn định",
+  "created_at": "2025-01-09T08:00:00Z",
+  "updated_at": "2025-01-09T17:30:00Z"
+}

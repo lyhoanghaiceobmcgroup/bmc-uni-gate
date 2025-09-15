@@ -132,16 +132,15 @@ const DeleteCompanies = () => {
 
   const deleteTargetCompanies = async () => {
     const targetCompanies = organizations.filter(org => 
-      org.name.toLowerCase().includes('olada') || 
-      org.name.toLowerCase().includes('adu')
+      org.level === 'F2' || org.level === 'F3' || org.level === 'F4' || org.level === 'F5'
     );
 
     if (targetCompanies.length === 0) {
-      toast.info('Không tìm thấy công ty nào có tên chứa "Olada" hoặc "adu"');
+      toast.info('Không tìm thấy công ty nào có cấp độ F2, F3, F4, F5');
       return;
     }
 
-    if (!confirm(`Bạn có chắc chắn muốn xóa ${targetCompanies.length} công ty có tên chứa "Olada" hoặc "adu"?`)) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa ${targetCompanies.length} công ty cấp F2, F3, F4, F5?`)) {
       return;
     }
 
@@ -175,7 +174,7 @@ const DeleteCompanies = () => {
               size="sm"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              Xóa Olada & adu
+              Xóa F2, F3, F4, F5
             </Button>
           </div>
         </div>

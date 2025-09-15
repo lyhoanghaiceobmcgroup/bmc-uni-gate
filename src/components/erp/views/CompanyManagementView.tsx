@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,9 @@ import { F2HoldingView } from "./F2HoldingView";
 import { F3CompanyView } from "./F3CompanyView";
 import { AutoTieringSystem } from "../AutoTieringSystem";
 import { DataEntryForms } from "../DataEntryForms";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Building2, 
   TrendingUp, 
@@ -43,18 +46,93 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
   const [selectedTimeframe, setSelectedTimeframe] = useState("month");
   const [selectedCompany, setSelectedCompany] = useState<any>(null);
   const [viewMode, setViewMode] = useState("overview");
+  const [loading, setLoading] = useState(true);
+  const [dbOrganizations, setDbOrganizations] = useState<any[]>([]);
+  const { user } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const getButtonVariant = (mode: string) => {
     return viewMode === mode ? "default" : "outline";
   };
 
-  // Mockup F2-F3 Companies - đã xóa bỏ tất cả các công ty
-  const mockF2Companies: any[] = [];
+  // Load organizations from database
+  useEffect(() => {
+    loadOrganizations();
+  }, [user]);
 
-  const mockF3Companies: any[] = [];
+  const loadOrganizations = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('user_organization_roles')
+        .select(`
+          role,
+          organizations (*)
+        `)
+        .eq('user_id', user.id);
 
-  const allCompanies = [...mockF2Companies, ...mockF3Companies];
+      if (error) throw error;
+
+      setDbOrganizations(data || []);
+    } catch (error) {
+      console.error('Error loading organizations:', error);
+      toast({
+        title: "Lỗi",
+        description: "Không thể tải danh sách công ty từ database",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter F2 and F3 companies from database
+  const { f2Companies, f3Companies, allCompanies } = useMemo(() => {
+    const f2 = dbOrganizations
+      .filter(org => org.organizations?.level === 'F2')
+      .map(org => ({
+        id: org.organizations.id,
+        name: org.organizations.name,
+        level: 'F2',
+        type: 'holding_company',
+        sector: org.organizations.industry || 'Chưa xác định',
+        bmcOwnership: org.organizations.bmc_equity_percentage || 0,
+        revenue: 0, // Sẽ được cập nhật từ báo cáo
+        profit: 0,
+        employees: 0,
+        avgKPI: 0,
+        complianceScore: 0,
+        establishedDate: org.organizations.created_at,
+        code: org.organizations.code
+      }));
+    
+    const f3 = dbOrganizations
+      .filter(org => org.organizations?.level === 'F3')
+      .map(org => ({
+        id: org.organizations.id,
+        name: org.organizations.name,
+        level: 'F3',
+        type: 'strategic_company',
+        sector: org.organizations.industry || 'Chưa xác định',
+        bmcOwnership: org.organizations.bmc_equity_percentage || 0,
+        revenue: 0, // Sẽ được cập nhật từ báo cáo
+        profit: 0,
+        employees: 0,
+        avgKPI: 0,
+        complianceScore: 0,
+        establishedDate: org.organizations.created_at,
+        code: org.organizations.code
+      }));
+    
+    return {
+      f2Companies: f2,
+      f3Companies: f3,
+      allCompanies: [...f2, ...f3]
+    };
+  }, [dbOrganizations]);
   
   const totalMetrics = {
     totalRevenue: allCompanies.reduce((sum, c) => sum + c.revenue, 0),
@@ -67,11 +145,11 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
 
   // Render specific views based on mode
   if (viewMode === "f2-holding") {
-    return <F2HoldingView holdingData={mockF2Companies[0]} onBack={() => setViewMode("overview")} />;
+    return <F2HoldingView holdingData={f2Companies[0]} onBack={() => setViewMode("overview")} />;
   }
   
   if (viewMode === "f3-companies") {
-    return <F3CompanyView companyData={mockF3Companies[0]} onBack={() => setViewMode("overview")} />;
+    return <F3CompanyView companyData={f3Companies[0]} onBack={() => setViewMode("overview")} />;
   }
   
   if (viewMode === "auto-tiering") {
@@ -107,14 +185,19 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
           </p>
           <div className="flex items-center space-x-4 mt-3">
             <Badge variant="secondary" className="text-sm">
-              🏬 {mockF2Companies.length} F2 Holdings
+              🏬 {f2Companies.length} F2 Holdings
             </Badge>
             <Badge variant="secondary" className="text-sm">
-              🏢 {mockF3Companies.length} F3 Strategic
+              🏢 {f3Companies.length} F3 Strategic
             </Badge>
             <Badge variant="outline" className="text-sm">
               💰 {totalMetrics.totalRevenue} tỷ VNĐ total revenue
             </Badge>
+            {loading && (
+              <Badge variant="outline" className="text-sm animate-pulse">
+                🔄 Đang tải dữ liệu...
+              </Badge>
+            )}
           </div>
         </div>
         <div className="flex items-center space-x-3">
@@ -342,8 +425,9 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
             <div className="flex items-center">
               <Building2 className="h-5 w-5 mr-2" />
               Danh Sách Công Ty Thành Viên ({allCompanies.length})
+              {loading && <span className="ml-2 text-sm text-muted-foreground animate-pulse">🔄</span>}
             </div>
-            <Button size="sm">
+            <Button size="sm" disabled={loading}>
               <Plus className="h-4 w-4 mr-2" />
               Thêm công ty
             </Button>
@@ -351,7 +435,25 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {allCompanies.map((company, index) => (
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Đang tải danh sách công ty từ database...</p>
+              </div>
+            ) : allCompanies.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-muted-foreground mb-4">
+                  <Building2 className="w-16 h-16 mx-auto" />
+                </div>
+                <h4 className="text-lg font-medium mb-2">Chưa có công ty nào</h4>
+                <p className="text-muted-foreground mb-4">Hiện tại chưa có công ty F2 hoặc F3 nào trong hệ thống.</p>
+                <Button onClick={() => setViewMode("data-entry")}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Thêm Công Ty Mới
+                </Button>
+              </div>
+            ) : (
+              allCompanies.map((company, index) => (
               <div key={company.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                 <div className="flex items-center space-x-4">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
@@ -409,7 +511,8 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
                   </Button>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
@@ -427,10 +530,15 @@ export function CompanyManagementView({ organizations }: CompanyManagementViewPr
             <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border-l-4 border-blue-500">
               <h4 className="font-semibold text-blue-900 dark:text-blue-100">📊 AI Tóm Tắt Hệ Sinh Thái F2-F3 (Realtime)</h4>
               <p className="text-blue-800 dark:text-blue-200 mt-2">
-                "Tổng doanh thu {allCompanies.length} công ty thành viên đạt {totalMetrics.totalRevenue.toLocaleString()} tỷ VNĐ. 
-                F2 F&B Holding dẫn đầu với 2,850 tỷ (68.5% BMC), F2 Tech Holding 1,950 tỷ (72.3% BMC). 
-                Lợi nhuận hợp nhất {totalMetrics.totalProfit.toLocaleString()} tỷ, tỷ suất lợi nhuận 17.2%. 
-                Tổng nhân lực {totalMetrics.totalEmployees.toLocaleString()} người với KPI TB {totalMetrics.avgKPI}%."
+                {allCompanies.length > 0 ? (
+                  `"Hệ thống đang quản lý ${allCompanies.length} công ty thành viên (${f2Companies.length} F2 Holdings, ${f3Companies.length} F3 Strategic). 
+                  Tổng doanh thu ${totalMetrics.totalRevenue.toLocaleString()} tỷ VNĐ. 
+                  Lợi nhuận hợp nhất ${totalMetrics.totalProfit.toLocaleString()} tỷ VNĐ. 
+                  Tổng nhân lực ${totalMetrics.totalEmployees.toLocaleString()} người với KPI TB ${totalMetrics.avgKPI}%. 
+                  BMC ownership trung bình ${totalMetrics.avgBMCOwnership}%."`
+                ) : (
+                  loading ? "🔄 Đang tải dữ liệu công ty từ database..." : "📊 Chưa có công ty F2-F3 nào trong hệ thống. Vui lòng thêm công ty để bắt đầu quản lý."
+                )}
               </p>
             </div>
             

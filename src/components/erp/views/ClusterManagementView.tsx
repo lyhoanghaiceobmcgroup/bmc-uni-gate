@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { ClusterView } from "./ClusterView";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Building2, 
   TrendingUp, 
@@ -48,29 +51,164 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
   const [selectedTimeframe, setSelectedTimeframe] = useState("quarter");
   const [selectedCluster, setSelectedCluster] = useState<any>(null);
   const [viewMode, setViewMode] = useState("overview");
+  const [loading, setLoading] = useState(true);
+  const [dbOrganizations, setDbOrganizations] = useState<any[]>([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
 
-  // Mockup Data F1 - Cụm Ngành đã được reset về 0
+  // Load F1 organizations from database
+  useEffect(() => {
+    const loadF1Organizations = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('user_organization_roles')
+          .select(`
+            organizations (
+              id,
+              name,
+              code,
+              level,
+              industry,
+              main_products,
+              bmc_equity_percentage,
+              total_investment_value,
+              investment_year,
+              description,
+              status,
+              created_at
+            )
+          `)
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.error('Error loading F1 organizations:', error);
+          toast({
+            title: "Lỗi tải dữ liệu",
+            description: "Không thể tải danh sách cụm ngành F1",
+            variant: "destructive"
+          });
+        } else {
+          setDbOrganizations(data || []);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadF1Organizations();
+  }, [user, toast]);
+
+  // Industry mapping for F1 clusters
+  const industryClusterMapping = {
+    "F&B": "f1-fnb",
+    "Technology": "f1-tech",
+    "Education": "f1-edu",
+    "Finance": "f1-finance",
+    "Manufacturing": "f1-manufacturing",
+    "Retail": "f1-retail",
+    "Healthcare": "f1-healthcare",
+    "Real Estate": "f1-realestate",
+    "Logistics": "f1-logistics",
+    "Agriculture": "f1-agriculture",
+    "Energy": "f1-energy",
+    // Legacy mappings for backward compatibility
+    "F&B - Thực phẩm đồ uống": "f1-fnb",
+    "Công nghệ - Technology": "f1-tech",
+    "Giáo dục - Education": "f1-edu",
+    "Tài chính - Finance": "f1-finance",
+    "Bán lẻ - Retail": "f1-retail",
+    "Y tế - Healthcare": "f1-healthcare",
+    "Bất động sản - Real Estate": "f1-realestate",
+    "Sản xuất - Manufacturing": "f1-manufacturing",
+    "Nông nghiệp - Agriculture": "f1-agriculture",
+    "Năng lượng - Energy": "f1-energy"
+  };
+
+  // Filter and categorize F1 companies from database
+  const { f1CompaniesByCluster, clusterMetrics } = useMemo(() => {
+    const f1Companies = dbOrganizations
+      .filter(org => org.organizations?.level === 'F1')
+      .map(org => ({
+        id: org.organizations.id,
+        name: org.organizations.name,
+        level: 'F1',
+        industry: org.organizations.industry || 'Chưa xác định',
+        bmcOwnership: org.organizations.bmc_equity_percentage || 0,
+        revenue: 0, // Sẽ được cập nhật từ consolidated_reports
+        expenses: 0,
+        profit: 0,
+        employees: 0,
+        avgKPI: 0,
+        complianceScore: 0,
+        sectorFund: org.organizations.total_investment_value || 0,
+        growth: 0,
+        establishedDate: org.organizations.created_at,
+        code: org.organizations.code,
+        description: org.organizations.description,
+        status: org.organizations.status
+      }));
+
+    // Group F1 companies by cluster
+    const companiesByCluster: { [key: string]: any[] } = {};
+    const metrics: { [key: string]: any } = {};
+
+    f1Companies.forEach(company => {
+      const clusterId = industryClusterMapping[company.industry] || 'f1-other';
+      if (!companiesByCluster[clusterId]) {
+        companiesByCluster[clusterId] = [];
+      }
+      companiesByCluster[clusterId].push(company);
+    });
+
+    // Calculate metrics for each cluster
+    Object.keys(companiesByCluster).forEach(clusterId => {
+      const companies = companiesByCluster[clusterId];
+      metrics[clusterId] = {
+        revenue: companies.reduce((sum, c) => sum + c.revenue, 0),
+        expenses: companies.reduce((sum, c) => sum + c.expenses, 0),
+        profit: companies.reduce((sum, c) => sum + c.profit, 0),
+        employees: companies.reduce((sum, c) => sum + c.employees, 0),
+        avgKPI: companies.length > 0 ? Math.round(companies.reduce((sum, c) => sum + c.avgKPI, 0) / companies.length) : 0,
+        complianceScore: companies.length > 0 ? Math.round(companies.reduce((sum, c) => sum + c.complianceScore, 0) / companies.length) : 0,
+        sectorFund: companies.reduce((sum, c) => sum + c.sectorFund, 0),
+        bmcOwnership: companies.length > 0 ? Math.round(companies.reduce((sum, c) => sum + c.bmcOwnership, 0) / companies.length) : 0,
+        memberCompanies: companies
+      };
+    });
+
+    return {
+      f1CompaniesByCluster: companiesByCluster,
+      clusterMetrics: metrics
+    };
+  }, [dbOrganizations]);
+
+  // Cluster Data với dữ liệu thực từ database
   const clusterData = [
     {
       id: "f1-fnb",
       name: "🍔 F1 - Cụm F&B",
       industry: "Food & Beverage",
       icon: Coffee,
-      bmcOwnership: 0,
-      revenue: 0, // tỷ VNĐ
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0, // tỷ VNĐ
-      growth: 0,
-      memberCompanies: [],
+      bmcOwnership: clusterMetrics["f1-fnb"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-fnb"]?.revenue || 0,
+      expenses: clusterMetrics["f1-fnb"]?.expenses || 0,
+      profit: clusterMetrics["f1-fnb"]?.profit || 0,
+      employees: clusterMetrics["f1-fnb"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-fnb"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-fnb"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-fnb"]?.sectorFund || 0,
+      growth: 0, // Sẽ được tính từ historical data
+      memberCompanies: f1CompaniesByCluster["f1-fnb"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành F&B"
+        strengths: f1CompaniesByCluster["f1-fnb"]?.length > 0 ? `${f1CompaniesByCluster["f1-fnb"].length} công ty F1 đang hoạt động trong cụm F&B` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-fnb"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần cập nhật dữ liệu báo cáo",
+        recommendations: f1CompaniesByCluster["f1-fnb"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành F&B" : "Tối ưu hóa hiệu suất và mở rộng danh mục"
       }
     },
     {
@@ -78,20 +216,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "💻 F1 - Cụm Công nghệ",
       industry: "Technology",
       icon: Laptop,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-tech"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-tech"]?.revenue || 0,
+      expenses: clusterMetrics["f1-tech"]?.expenses || 0,
+      profit: clusterMetrics["f1-tech"]?.profit || 0,
+      employees: clusterMetrics["f1-tech"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-tech"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-tech"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-tech"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-tech"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Công nghệ"
+        strengths: f1CompaniesByCluster["f1-tech"]?.length > 0 ? `${f1CompaniesByCluster["f1-tech"].length} công ty F1 đang hoạt động trong cụm Công nghệ` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-tech"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần cập nhật dữ liệu báo cáo",
+        recommendations: f1CompaniesByCluster["f1-tech"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Công nghệ" : "Đầu tư R&D và mở rộng thị trường"
       }
     },
     {
@@ -99,20 +237,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🎓 F1 - Cụm Giáo dục",
       industry: "Education",
       icon: GraduationCap,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-edu"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-edu"]?.revenue || 0,
+      expenses: clusterMetrics["f1-edu"]?.expenses || 0,
+      profit: clusterMetrics["f1-edu"]?.profit || 0,
+      employees: clusterMetrics["f1-edu"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-edu"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-edu"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-edu"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-edu"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Giáo dục"
+        strengths: f1CompaniesByCluster["f1-edu"]?.length > 0 ? `${f1CompaniesByCluster["f1-edu"].length} công ty F1 đang hoạt động trong cụm Giáo dục` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-edu"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần cập nhật dữ liệu báo cáo",
+        recommendations: f1CompaniesByCluster["f1-edu"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Giáo dục" : "Phát triển chương trình đào tạo và mở rộng thị trường"
       }
     },
     {
@@ -120,20 +258,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🏦 F1 - Cụm Tài chính",
       industry: "Financial Services",
       icon: DollarSign,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-finance"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-finance"]?.revenue || 0,
+      expenses: clusterMetrics["f1-finance"]?.expenses || 0,
+      profit: clusterMetrics["f1-finance"]?.profit || 0,
+      employees: clusterMetrics["f1-finance"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-finance"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-finance"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-finance"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-finance"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Tài chính"
+        strengths: f1CompaniesByCluster["f1-finance"]?.length > 0 ? `${f1CompaniesByCluster["f1-finance"].length} công ty F1 đang hoạt động trong cụm Tài chính` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-finance"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần tuân thủ quy định tài chính",
+        recommendations: f1CompaniesByCluster["f1-finance"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Tài chính" : "Mở rộng dịch vụ và tăng cường quản lý rủi ro"
       }
     },
     {
@@ -141,20 +279,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🏭 F1 - Cụm Sản xuất",
       industry: "Manufacturing",
       icon: Factory,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-manufacturing"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-manufacturing"]?.revenue || 0,
+      expenses: clusterMetrics["f1-manufacturing"]?.expenses || 0,
+      profit: clusterMetrics["f1-manufacturing"]?.profit || 0,
+      employees: clusterMetrics["f1-manufacturing"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-manufacturing"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-manufacturing"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-manufacturing"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-manufacturing"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Sản xuất"
+        strengths: f1CompaniesByCluster["f1-manufacturing"]?.length > 0 ? `${f1CompaniesByCluster["f1-manufacturing"].length} công ty F1 đang hoạt động trong cụm Sản xuất` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-manufacturing"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần tối ưu hóa quy trình sản xuất",
+        recommendations: f1CompaniesByCluster["f1-manufacturing"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Sản xuất" : "Đầu tư công nghệ và tự động hóa"
       }
     },
     {
@@ -162,20 +300,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🛒 F1 - Cụm Bán lẻ",
       industry: "Retail & Consumer",
       icon: Package,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-retail"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-retail"]?.revenue || 0,
+      expenses: clusterMetrics["f1-retail"]?.expenses || 0,
+      profit: clusterMetrics["f1-retail"]?.profit || 0,
+      employees: clusterMetrics["f1-retail"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-retail"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-retail"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-retail"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-retail"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Bán lẻ"
+        strengths: f1CompaniesByCluster["f1-retail"]?.length > 0 ? `${f1CompaniesByCluster["f1-retail"].length} công ty F1 đang hoạt động trong cụm Bán lẻ` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-retail"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần theo dõi xu hướng thị trường",
+        recommendations: f1CompaniesByCluster["f1-retail"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Bán lẻ" : "Phát triển kênh online và cải thiện trải nghiệm khách hàng"
       }
     },
     {
@@ -183,20 +321,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🏥 F1 - Cụm Y tế",
       industry: "Healthcare",
       icon: Target,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-healthcare"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-healthcare"]?.revenue || 0,
+      expenses: clusterMetrics["f1-healthcare"]?.expenses || 0,
+      profit: clusterMetrics["f1-healthcare"]?.profit || 0,
+      employees: clusterMetrics["f1-healthcare"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-healthcare"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-healthcare"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-healthcare"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-healthcare"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Y tế"
+        strengths: f1CompaniesByCluster["f1-healthcare"]?.length > 0 ? `${f1CompaniesByCluster["f1-healthcare"].length} công ty F1 đang hoạt động trong cụm Y tế` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-healthcare"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần tuân thủ quy định y tế nghiêm ngặt",
+        recommendations: f1CompaniesByCluster["f1-healthcare"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Y tế" : "Đầu tư nghiên cứu và phát triển dịch vụ y tế"
       }
     },
     {
@@ -204,20 +342,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🏢 F1 - Cụm Bất động sản",
       industry: "Real Estate",
       icon: Building2,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-realestate"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-realestate"]?.revenue || 0,
+      expenses: clusterMetrics["f1-realestate"]?.expenses || 0,
+      profit: clusterMetrics["f1-realestate"]?.profit || 0,
+      employees: clusterMetrics["f1-realestate"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-realestate"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-realestate"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-realestate"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-realestate"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Bất động sản"
+        strengths: f1CompaniesByCluster["f1-realestate"]?.length > 0 ? `${f1CompaniesByCluster["f1-realestate"].length} công ty F1 đang hoạt động trong cụm Bất động sản` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-realestate"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần theo dõi thị trường bất động sản",
+        recommendations: f1CompaniesByCluster["f1-realestate"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Bất động sản" : "Phát triển dự án và quản lý danh mục bất động sản"
       }
     },
     {
@@ -225,20 +363,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🚛 F1 - Cụm Logistics",
       industry: "Logistics & Supply Chain",
       icon: Package,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-logistics"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-logistics"]?.revenue || 0,
+      expenses: clusterMetrics["f1-logistics"]?.expenses || 0,
+      profit: clusterMetrics["f1-logistics"]?.profit || 0,
+      employees: clusterMetrics["f1-logistics"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-logistics"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-logistics"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-logistics"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-logistics"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Logistics"
+        strengths: f1CompaniesByCluster["f1-logistics"]?.length > 0 ? `${f1CompaniesByCluster["f1-logistics"].length} công ty F1 đang hoạt động trong cụm Logistics` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-logistics"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần tối ưu hóa chuỗi cung ứng",
+        recommendations: f1CompaniesByCluster["f1-logistics"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Logistics" : "Mở rộng mạng lưới và ứng dụng công nghệ 4.0"
       }
     },
     {
@@ -246,20 +384,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "🌾 F1 - Cụm Nông nghiệp",
       industry: "Agriculture & Food Processing",
       icon: Factory,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-agriculture"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-agriculture"]?.revenue || 0,
+      expenses: clusterMetrics["f1-agriculture"]?.expenses || 0,
+      profit: clusterMetrics["f1-agriculture"]?.profit || 0,
+      employees: clusterMetrics["f1-agriculture"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-agriculture"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-agriculture"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-agriculture"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-agriculture"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Nông nghiệp"
+        strengths: f1CompaniesByCluster["f1-agriculture"]?.length > 0 ? `${f1CompaniesByCluster["f1-agriculture"].length} công ty F1 đang hoạt động trong cụm Nông nghiệp` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-agriculture"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần theo dõi thời tiết và mùa vụ",
+        recommendations: f1CompaniesByCluster["f1-agriculture"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Nông nghiệp" : "Ứng dụng công nghệ cao và phát triển bền vững"
       }
     },
     {
@@ -267,20 +405,20 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
       name: "⚡ F1 - Cụm Năng lượng",
       industry: "Energy & Utilities",
       icon: Zap,
-      bmcOwnership: 0,
-      revenue: 0,
-      expenses: 0,
-      profit: 0,
-      employees: 0,
-      avgKPI: 0,
-      complianceScore: 0,
-      sectorFund: 0,
+      bmcOwnership: clusterMetrics["f1-energy"]?.bmcOwnership || 0,
+      revenue: clusterMetrics["f1-energy"]?.revenue || 0,
+      expenses: clusterMetrics["f1-energy"]?.expenses || 0,
+      profit: clusterMetrics["f1-energy"]?.profit || 0,
+      employees: clusterMetrics["f1-energy"]?.employees || 0,
+      avgKPI: clusterMetrics["f1-energy"]?.avgKPI || 0,
+      complianceScore: clusterMetrics["f1-energy"]?.complianceScore || 0,
+      sectorFund: clusterMetrics["f1-energy"]?.sectorFund || 0,
       growth: 0,
-      memberCompanies: [],
+      memberCompanies: f1CompaniesByCluster["f1-energy"] || [],
       aiInsights: {
-        strengths: "Dữ liệu đã được reset, sẵn sàng khởi tạo công ty mới",
-        warnings: "Chưa có dữ liệu hoạt động",
-        recommendations: "Khởi tạo các công ty thành viên mới trong cụm ngành Năng lượng"
+        strengths: f1CompaniesByCluster["f1-energy"]?.length > 0 ? `${f1CompaniesByCluster["f1-energy"].length} công ty F1 đang hoạt động trong cụm Năng lượng` : "Sẵn sàng khởi tạo công ty mới",
+        warnings: f1CompaniesByCluster["f1-energy"]?.length === 0 ? "Chưa có công ty F1 trong cụm ngành" : "Cần tuân thủ quy định môi trường",
+        recommendations: f1CompaniesByCluster["f1-energy"]?.length === 0 ? "Khởi tạo các công ty F1 mới trong cụm ngành Năng lượng" : "Phát triển năng lượng tái tạo và tiết kiệm năng lượng"
       }
     }
   ];
@@ -299,6 +437,17 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
     return <ClusterView organizations={organizations} />;
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang tải dữ liệu cụm ngành F1...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -313,11 +462,16 @@ export function ClusterManagementView({ organizations }: ClusterManagementViewPr
               📊 {clusterData.length} Cụm ngành hoạt động
             </Badge>
             <Badge variant="secondary" className="text-sm">
-              💰 {totalMetrics.totalFund} tỷ VNĐ quỹ phát triển
+              💰 {(totalMetrics.totalFund / 1000000000).toFixed(1)} tỷ VNĐ quỹ phát triển
             </Badge>
             <Badge variant="outline" className="text-sm">
-              🏢 {totalMetrics.totalCompanies} công ty thành viên
+              🏢 {totalMetrics.totalCompanies} công ty F1 thành viên
             </Badge>
+            {totalMetrics.totalCompanies === 0 && (
+              <Badge variant="destructive" className="text-sm">
+                ⚠️ Chưa có công ty F1 trong hệ thống
+              </Badge>
+            )}
           </div>
         </div>
         <div className="flex items-center space-x-3">

@@ -18,6 +18,7 @@ interface OrganizationFormData {
   taxCode: string;
   level: OrganizationLevel;
   industry: string;
+  cluster?: string;
   mainProducts: string[];
   bmcEquityPercentage: number;
   totalInvestmentValue: number;
@@ -34,6 +35,20 @@ const industries = [
   "Y tế - Healthcare",
   "Bất động sản - Real Estate",
   "Sản xuất - Manufacturing"
+];
+
+const industryClusters = [
+  { value: "F&B", label: "🍔 Cụm F&B" },
+  { value: "Technology", label: "💻 Cụm Công nghệ" },
+  { value: "Education", label: "🎓 Cụm Giáo dục" },
+  { value: "Finance", label: "🏦 Cụm Tài chính" },
+  { value: "Manufacturing", label: "🏭 Cụm Sản xuất" },
+  { value: "Retail", label: "🛒 Cụm Bán lẻ" },
+  { value: "Healthcare", label: "🏥 Cụm Y tế" },
+  { value: "Real Estate", label: "🏢 Cụm Bất động sản" },
+  { value: "Logistics", label: "🚛 Cụm Logistics" },
+  { value: "Agriculture", label: "🌾 Cụm Nông nghiệp" },
+  { value: "Energy", label: "⚡ Cụm Năng lượng" }
 ];
 
 const organizationLevels = [
@@ -53,6 +68,7 @@ export function OrganizationSetupForm({ onComplete }: { onComplete: () => void }
     taxCode: "",
     level: "F5",
     industry: "",
+    cluster: "",
     mainProducts: [],
     bmcEquityPercentage: 15,
     totalInvestmentValue: 0,
@@ -84,6 +100,12 @@ export function OrganizationSetupForm({ onComplete }: { onComplete: () => void }
     // Check if user is CEO BMC
     if (user.email !== "lyhoanghaiceo@gmail.com") {
       toast.error("Chỉ CEO BMC mới có quyền tạo dự án/doanh nghiệp mới!");
+      return;
+    }
+
+    // Validate cluster selection for all levels
+    if (!formData.cluster) {
+      toast.error("Vui lòng chọn cụm ngành!");
       return;
     }
 
@@ -137,21 +159,24 @@ export function OrganizationSetupForm({ onComplete }: { onComplete: () => void }
       }
 
       // Create new organization under BMC Corporation
+      const organizationData: any = {
+        name: formData.name,
+        tax_code: formData.taxCode || null,
+        level: formData.level,
+        industry: formData.cluster || formData.industry,
+        cluster: formData.cluster,
+        main_products: formData.mainProducts,
+        bmc_equity_percentage: formData.bmcEquityPercentage,
+        total_investment_value: formData.totalInvestmentValue,
+        investment_year: formData.investmentYear,
+        description: formData.description,
+        code: `${formData.level}-${Date.now()}`,
+        parent_id: bmcCorporation.id // Link to BMC Corporation
+      };
+
       const { data: organization, error: orgError } = await supabase
         .from('organizations')
-        .insert({
-          name: formData.name,
-          tax_code: formData.taxCode || null,
-          level: formData.level,
-          industry: formData.industry,
-          main_products: formData.mainProducts,
-          bmc_equity_percentage: formData.bmcEquityPercentage,
-          total_investment_value: formData.totalInvestmentValue,
-          investment_year: formData.investmentYear,
-          description: formData.description,
-          code: `${formData.level}-${Date.now()}`,
-          parent_id: bmcCorporation.id // Link to BMC Corporation
-        })
+        .insert(organizationData)
         .select()
         .single();
 
@@ -261,7 +286,8 @@ export function OrganizationSetupForm({ onComplete }: { onComplete: () => void }
                 onValueChange={(value: OrganizationLevel) => {
                   setFormData(prev => ({ 
                     ...prev, 
-                    level: value
+                    level: value,
+                    cluster: value === "F1" ? "" : prev.cluster
                   }));
                 }}
               >
@@ -275,6 +301,32 @@ export function OrganizationSetupForm({ onComplete }: { onComplete: () => void }
                     </SelectItem>
                   ))}
                 </SelectContent>
+              </Select>
+            </div>
+
+            {/* Cluster Selection for all levels */}
+            <div className="space-y-2">
+              <Label>Cụm ngành *</Label>
+              <Select 
+                value={formData.cluster} 
+                onValueChange={(value: string) => {
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    cluster: value,
+                    industry: value // Auto-set industry based on cluster
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Chọn cụm ngành" />
+                </SelectTrigger>
+                <SelectContent>
+                    {industryClusters.map(cluster => (
+                      <SelectItem key={cluster.value} value={cluster.value}>
+                        {cluster.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
               </Select>
             </div>
 

@@ -56,190 +56,761 @@ interface SalesMarketingDetailViewProps {
   organizations: any[];
 }
 
-// Enhanced Mock data with project/company associations
+// Enhanced Mock data with comprehensive business intelligence from BMC ecosystem
 const mockSalesData = {
-  monthlyRevenue: 2500000000,
-  monthlyTarget: 3000000000,
-  conversionRate: 18.5,
-  newCustomers: 156,
-  marketingROI: 320,
-  totalOrders: 1248,
-  averageOrderValue: 2000000,
-  customerRetention: 85.3
+  monthlyRevenue: 15750000000, // Tổng doanh thu từ tất cả công ty trong hệ sinh thái BMC
+  monthlyTarget: 18000000000,
+  conversionRate: 24.8, // Tỷ lệ chuyển đổi trung bình từ BMC->F5
+  newCustomers: 2847, // Khách hàng mới từ tất cả các cấp độ
+  marketingROI: 485, // ROI marketing tổng hợp
+  totalOrders: 8956, // Tổng đơn hàng từ toàn hệ thống
+  averageOrderValue: 1758000, // Giá trị đơn hàng trung bình
+  customerRetention: 92.7, // Tỷ lệ giữ chân khách hàng
+  totalRevenueBMC: 15750000000,
+  revenueGrowthRate: 28.5, // Tăng trưởng doanh thu YoY
+  marketShare: 15.2, // Thị phần trong ngành
+  customerLifetimeValue: 45600000, // Giá trị khách hàng trọn đời
+  salesCycleLength: 45, // Chu kỳ bán hàng trung bình (ngày)
+  leadToCustomerRate: 18.3, // Tỷ lệ chuyển đổi từ lead thành khách hàng
+  crossSellRate: 34.7, // Tỷ lệ bán chéo
+  upsellRate: 28.9 // Tỷ lệ bán tăng
 };
 
 const mockProjects = [
-  { id: 1, name: "Dự án ERP Alpha", company: "BMC Group" },
-  { id: 2, name: "Dự án Fintech Beta", company: "BMC Invest" },
-  { id: 3, name: "Dự án AI Gamma", company: "BMC Tech" },
-  { id: 4, name: "Dự án Blockchain Delta", company: "BMC Innovation" }
+  // BMC Level - Holding Company Projects
+  { id: 1, name: "BMC Digital Transformation 2025", company: "BMC Holdings", level: "BMC", revenue: 5200000000, employees: 1250, marketCap: 125000000000 },
+  
+  // F1 Level - Corporation Projects  
+  { id: 2, name: "F1 Technology Ecosystem", company: "F1 Tech Corp", level: "F1", revenue: 3800000000, employees: 850, marketCap: 45000000000 },
+  { id: 3, name: "F1 Retail Digital Platform", company: "F1 Retail Group", level: "F1", revenue: 2900000000, employees: 650, marketCap: 32000000000 },
+  { id: 4, name: "F1 Financial Services Hub", company: "F1 Finance Corp", level: "F1", revenue: 4100000000, employees: 750, marketCap: 38000000000 },
+  
+  // F2 Level - Company Projects
+  { id: 5, name: "F2 SaaS Solutions Suite", company: "F2 Software Solutions", level: "F2", revenue: 1850000000, employees: 420, marketCap: 18500000000 },
+  { id: 6, name: "F2 E-commerce Marketplace", company: "F2 Digital Commerce", level: "F2", revenue: 1650000000, employees: 380, marketCap: 16200000000 },
+  { id: 7, name: "F2 Fintech Innovation Lab", company: "F2 Fintech Solutions", level: "F2", revenue: 2100000000, employees: 480, marketCap: 21000000000 },
+  
+  // F3 Level - Startup Projects
+  { id: 8, name: "F3 AI-Powered CRM", company: "F3 AI Solutions", level: "F3", revenue: 850000000, employees: 180, marketCap: 8500000000 },
+  { id: 9, name: "F3 Blockchain Infrastructure", company: "F3 Blockchain Lab", level: "F3", revenue: 720000000, employees: 150, marketCap: 7200000000 },
+  { id: 10, name: "F3 IoT Smart Systems", company: "F3 IoT Innovations", level: "F3", revenue: 650000000, employees: 140, marketCap: 6500000000 },
+  
+  // F4 Level - Project Divisions
+  { id: 11, name: "F4 Machine Learning Platform", company: "F4 ML Division", level: "F4", revenue: 420000000, employees: 85, marketCap: 4200000000 },
+  { id: 12, name: "F4 Quantum Computing Research", company: "F4 Quantum Lab", level: "F4", revenue: 380000000, employees: 75, marketCap: 3800000000 },
+  { id: 13, name: "F4 Cybersecurity Solutions", company: "F4 Security Division", level: "F4", revenue: 520000000, employees: 95, marketCap: 5200000000 },
+  
+  // F5 Level - Branch Operations
+  { id: 14, name: "F5 R&D Advanced Analytics", company: "F5 Research Branch", level: "F5", revenue: 180000000, employees: 35, marketCap: 1800000000 },
+  { id: 15, name: "F5 Product Development Hub", company: "F5 Product Branch", level: "F5", revenue: 220000000, employees: 45, marketCap: 2200000000 },
+  { id: 16, name: "F5 Innovation Incubator", company: "F5 Innovation Branch", level: "F5", revenue: 160000000, employees: 30, marketCap: 1600000000 }
 ];
 
-const mockCampaigns = [
+const mockSalesCampaigns = [
+  // BMC Level - Strategic Sales Campaigns
   {
     id: 1,
-    name: "Chiến dịch Summer 2025",
-    channel: "Facebook Ads",
-    budget: 50000000,
-    spent: 32000000,
-    leads: 234,
-    conversions: 43,
-    roi: 285,
+    name: "BMC Enterprise Sales Initiative 2025",
+    channel: "Direct Sales + Strategic Partnerships",
+    budget: 850000000,
+    spent: 720000000,
+    leads: 15847,
+    conversions: 3892,
+    roi: 485,
     status: "Đang chạy",
-    manager: "Nguyễn Văn A",
+    manager: "Nguyễn Thị Minh - Sales Director BMC",
     projectId: 1,
-    projectName: "Dự án ERP Alpha",
-    companyName: "BMC Group",
-    startDate: "2025-01-15",
-    endDate: "2025-03-15",
-    targetAudience: "Doanh nghiệp SME, 25-45 tuổi"
+    projectName: "BMC Digital Transformation 2025",
+    companyName: "BMC Holdings",
+    level: "BMC",
+    startDate: "2025-01-01",
+    endDate: "2025-12-31",
+    targetAudience: "Enterprise C-Level, Investors, Strategic Partners",
+    kpiMetrics: {
+      salesConversion: 78.5,
+      dealClosureRate: 24.8,
+      customerAcquisitionCost: 1850000,
+      lifetimeValue: 45600000
+    }
   },
+  
+  // F1 Level - Corporation Sales
   {
     id: 2,
-    name: "Google Search Campaign",
-    channel: "Google Ads",
-    budget: 80000000,
-    spent: 65000000,
-    leads: 567,
-    conversions: 89,
-    roi: 340,
+    name: "F1 Technology Enterprise Sales",
+    channel: "Direct Sales + B2B Partnerships",
+    budget: 420000000,
+    spent: 385000000,
+    leads: 8945,
+    conversions: 1847,
+    roi: 520,
     status: "Đang chạy",
-    manager: "Trần Thị B",
+    manager: "Trần Văn Hùng - Sales Director F1",
     projectId: 2,
-    projectName: "Dự án Fintech Beta",
-    companyName: "BMC Invest",
-    startDate: "2025-01-10",
-    endDate: "2025-04-10",
-    targetAudience: "Nhà đầu tư cá nhân, 30-50 tuổi"
+    projectName: "F1 Technology Ecosystem",
+    companyName: "F1 Tech Corp",
+    level: "F1",
+    startDate: "2025-01-15",
+    endDate: "2025-06-30",
+    targetAudience: "Tech Leaders, CTOs, IT Decision Makers",
+    kpiMetrics: {
+      salesConversion: 65.2,
+      dealClosureRate: 18.7,
+      customerAcquisitionCost: 2280000,
+      lifetimeValue: 38500000
+    }
   },
+  
   {
     id: 3,
-    name: "TikTok Brand Awareness",
-    channel: "TikTok",
-    budget: 30000000,
-    spent: 28000000,
-    leads: 890,
-    conversions: 124,
+    name: "F1 Retail B2B Sales Program",
+    channel: "B2B Sales + Retail Partnerships",
+    budget: 320000000,
+    spent: 298000000,
+    leads: 12450,
+    conversions: 2847,
+    roi: 445,
+    status: "Đang chạy",
+    manager: "Lê Thị Hoa - Sales Manager F1 Retail",
+    projectId: 3,
+    projectName: "F1 Retail Digital Platform",
+    companyName: "F1 Retail Group",
+    level: "F1",
+    startDate: "2025-01-10",
+    endDate: "2025-08-31",
+    targetAudience: "Retail Chains, E-commerce Platforms, Digital Retailers",
+    kpiMetrics: {
+      salesConversion: 72.8,
+      dealClosureRate: 22.4,
+      customerAcquisitionCost: 1650000,
+      lifetimeValue: 28900000
+    }
+  },
+  
+  // F2 Level - Company Specific Sales
+  {
+    id: 4,
+    name: "F2 SaaS Enterprise Sales",
+    channel: "Direct Sales + Channel Partners",
+    budget: 180000000,
+    spent: 165000000,
+    leads: 6785,
+    conversions: 1245,
+    roi: 380,
+    status: "Đang chạy",
+    manager: "Phạm Minh Tuấn - Sales Manager F2",
+    projectId: 5,
+    projectName: "F2 SaaS Solutions Suite",
+    companyName: "F2 Software Solutions",
+    level: "F2",
+    startDate: "2025-01-20",
+    endDate: "2025-07-20",
+    targetAudience: "SME Business Owners, IT Managers",
+    kpiMetrics: {
+      salesConversion: 58.4,
+      dealClosureRate: 15.8,
+      customerAcquisitionCost: 1980000,
+      lifetimeValue: 24800000
+    }
+  },
+  
+  // F3 Level - Startup Marketing
+  {
+    id: 5,
+    name: "F3 AI Solutions Sales Drive",
+    channel: "Tech Conferences + Direct Outreach",
+    budget: 95000000,
+    spent: 87000000,
+    leads: 3450,
+    conversions: 685,
     roi: 420,
     status: "Hoàn thành",
-    manager: "Lê Văn C",
-    projectId: 3,
-    projectName: "Dự án AI Gamma",
-    companyName: "BMC Tech",
-    startDate: "2024-12-01",
+    manager: "Nguyễn Đức Anh - Sales Lead F3",
+    projectId: 8,
+    projectName: "F3 AI-Powered CRM",
+    companyName: "F3 AI Solutions",
+    level: "F3",
+    startDate: "2024-11-01",
     endDate: "2025-01-31",
-    targetAudience: "Gen Z, 18-30 tuổi, yêu thích công nghệ"
+    targetAudience: "Tech Startups, AI Enthusiasts, Early Adopters",
+    kpiMetrics: {
+      salesConversion: 45.7,
+      dealClosureRate: 12.3,
+      customerAcquisitionCost: 2450000,
+      lifetimeValue: 18500000
+    }
+  },
+  
+  // F4 Level - Project Division Marketing
+  {
+    id: 6,
+    name: "F4 ML Platform Enterprise Sales",
+    channel: "Developer Communities + Enterprise Sales",
+    budget: 45000000,
+    spent: 42000000,
+    leads: 1850,
+    conversions: 385,
+    roi: 350,
+    status: "Đang chạy",
+    manager: "Vũ Thị Lan - Sales Manager F4",
+    projectId: 11,
+    projectName: "F4 Machine Learning Platform",
+    companyName: "F4 ML Division",
+    level: "F4",
+    startDate: "2025-01-25",
+    endDate: "2025-05-25",
+    targetAudience: "Data Scientists, ML Engineers, Developers",
+    kpiMetrics: {
+      salesConversion: 32.8,
+      dealClosureRate: 8.7,
+      customerAcquisitionCost: 2850000,
+      lifetimeValue: 15200000
+    }
+  },
+  
+  // F5 Level - Branch Operations Marketing
+  {
+    id: 7,
+    name: "F5 Research Solutions Sales",
+    channel: "Academic Networks + Direct Sales",
+    budget: 25000000,
+    spent: 23000000,
+    leads: 950,
+    conversions: 185,
+    roi: 280,
+    status: "Đang chạy",
+    manager: "Hoàng Văn Đức - Sales Manager F5",
+    projectId: 14,
+    projectName: "F5 R&D Advanced Analytics",
+    companyName: "F5 Research Branch",
+    level: "F5",
+    startDate: "2025-02-01",
+    endDate: "2025-08-01",
+    targetAudience: "Researchers, PhD Students, Academic Institutions",
+    kpiMetrics: {
+      salesConversion: 28.5,
+      dealClosureRate: 6.4,
+      customerAcquisitionCost: 3200000,
+      lifetimeValue: 12800000
+    }
   }
 ];
 
 const mockCustomers = [
+  // BMC Level - Strategic Enterprise Customers
   {
     id: 1,
-    name: "Công ty ABC Tech",
-    email: "contact@abctech.com",
-    phone: "+84 901 234 567",
+    name: "Vietcombank - Ngân hàng TMCP Ngoại thương Việt Nam",
+    email: "partnership@vietcombank.com.vn",
+    phone: "+84 24 3825 1188",
     type: "Enterprise",
-    source: "Website",
-    totalValue: 150000000,
-    status: "Khách VIP",
-    loyaltyPoints: 1250,
-    lifecycle: "Customer",
+    source: "Strategic Partnership",
+    totalValue: 2850000000,
+    status: "Khách VIP Platinum",
+    loyaltyPoints: 28500,
+    lifecycle: "Strategic Partner",
     projectId: 1,
-    projectName: "Dự án ERP Alpha",
-    companyName: "BMC Group",
-    industry: "Công nghệ thông tin",
-    leadScore: 95,
-    lastContact: "2025-01-28"
+    projectName: "BMC Digital Transformation 2025",
+    companyName: "BMC Holdings",
+    level: "BMC",
+    industry: "Ngân hàng & Tài chính",
+    leadScore: 98,
+    lastContact: "2025-01-30",
+    contractValue: 2850000000,
+    contractDuration: "36 months",
+    renewalProbability: 95,
+    satisfactionScore: 9.2
   },
   {
     id: 2,
-    name: "Startup XYZ Solutions",
-    email: "hello@xyzsolutions.com", 
-    phone: "+84 902 345 678",
-    type: "SMB",
-    source: "Facebook",
-    totalValue: 45000000,
-    status: "Khách thường",
-    loyaltyPoints: 450,
-    lifecycle: "Opportunity",
+    name: "Vingroup - Tập đoàn Vingroup",
+    email: "corporate@vingroup.net",
+    phone: "+84 24 3974 9999",
+    type: "Enterprise",
+    source: "Direct Sales",
+    totalValue: 4200000000,
+    status: "Khách VIP Platinum",
+    loyaltyPoints: 42000,
+    lifecycle: "Strategic Partner",
     projectId: 2,
-    projectName: "Dự án Fintech Beta",
-    companyName: "BMC Invest",
-    industry: "Tài chính - Ngân hàng",
-    leadScore: 72,
-    lastContact: "2025-01-25"
+    projectName: "F1 Technology Ecosystem",
+    companyName: "F1 Tech Corp",
+    level: "F1",
+    industry: "Bất động sản & Retail",
+    leadScore: 97,
+    lastContact: "2025-01-29",
+    contractValue: 4200000000,
+    contractDuration: "48 months",
+    renewalProbability: 92,
+    satisfactionScore: 9.0
   },
+  
+  // F1 Level - Corporation Customers
   {
     id: 3,
-    name: "Nhà đầu tư DEF Capital",
-    email: "invest@defcapital.com",
-    phone: "+84 903 456 789", 
-    type: "Individual",
-    source: "Referral",
-    totalValue: 250000000,
-    status: "Khách VIP",
-    loyaltyPoints: 2500,
+    name: "FPT Corporation - Tập đoàn FPT",
+    email: "business@fpt.com.vn",
+    phone: "+84 24 3773 1010",
+    type: "Enterprise",
+    source: "LinkedIn Campaign",
+    totalValue: 1850000000,
+    status: "Khách VIP Gold",
+    loyaltyPoints: 18500,
     lifecycle: "Customer",
     projectId: 3,
-    projectName: "Dự án AI Gamma",
-    companyName: "BMC Tech",
-    industry: "Đầu tư - Tài chính",
-    leadScore: 98,
-    lastContact: "2025-01-30"
+    projectName: "F1 Retail Digital Platform",
+    companyName: "F1 Retail Group",
+    level: "F1",
+    industry: "Công nghệ thông tin",
+    leadScore: 94,
+    lastContact: "2025-01-28",
+    contractValue: 1850000000,
+    contractDuration: "24 months",
+    renewalProbability: 88,
+    satisfactionScore: 8.7
+  },
+  {
+    id: 4,
+    name: "Techcombank - Ngân hàng TMCP Kỹ thương Việt Nam",
+    email: "corporate@techcombank.com.vn",
+    phone: "+84 24 3928 8888",
+    type: "Enterprise",
+    source: "Event Marketing",
+    totalValue: 3200000000,
+    status: "Khách VIP Platinum",
+    loyaltyPoints: 32000,
+    lifecycle: "Strategic Partner",
+    projectId: 4,
+    projectName: "F1 Financial Services Hub",
+    companyName: "F1 Finance Corp",
+    level: "F1",
+    industry: "Ngân hàng & Tài chính",
+    leadScore: 96,
+    lastContact: "2025-01-31",
+    contractValue: 3200000000,
+    contractDuration: "60 months",
+    renewalProbability: 94,
+    satisfactionScore: 9.1
+  },
+  
+  // F2 Level - Company Customers
+  {
+    id: 5,
+    name: "Saigon Co.op - Liên hiệp HTX Thương mại TP.HCM",
+    email: "info@saigoncoop.com.vn",
+    phone: "+84 28 3822 4567",
+    type: "SMB",
+    source: "Google Ads",
+    totalValue: 850000000,
+    status: "Khách VIP Silver",
+    loyaltyPoints: 8500,
+    lifecycle: "Customer",
+    projectId: 5,
+    projectName: "F2 SaaS Solutions Suite",
+    companyName: "F2 Software Solutions",
+    level: "F2",
+    industry: "Bán lẻ & Thương mại",
+    leadScore: 85,
+    lastContact: "2025-01-27",
+    contractValue: 850000000,
+    contractDuration: "18 months",
+    renewalProbability: 82,
+    satisfactionScore: 8.3
+  },
+  {
+    id: 6,
+    name: "Tiki Corporation - Công ty TNHH Tiki",
+    email: "partnership@tiki.vn",
+    phone: "+84 28 7108 8888",
+    type: "SMB",
+    source: "Content Marketing",
+    totalValue: 1200000000,
+    status: "Khách VIP Gold",
+    loyaltyPoints: 12000,
+    lifecycle: "Customer",
+    projectId: 6,
+    projectName: "F2 E-commerce Marketplace",
+    companyName: "F2 Digital Commerce",
+    level: "F2",
+    industry: "E-commerce & Digital",
+    leadScore: 89,
+    lastContact: "2025-01-26",
+    contractValue: 1200000000,
+    contractDuration: "24 months",
+    renewalProbability: 86,
+    satisfactionScore: 8.6
+  },
+  
+  // F3 Level - Startup Customers
+  {
+    id: 7,
+    name: "Base.vn - Startup Fintech",
+    email: "hello@base.vn",
+    phone: "+84 28 7300 8888",
+    type: "Startup",
+    source: "Tech Conference",
+    totalValue: 420000000,
+    status: "Khách thường",
+    loyaltyPoints: 4200,
+    lifecycle: "Opportunity",
+    projectId: 8,
+    projectName: "F3 AI-Powered CRM",
+    companyName: "F3 AI Solutions",
+    level: "F3",
+    industry: "Fintech & AI",
+    leadScore: 78,
+    lastContact: "2025-01-25",
+    contractValue: 420000000,
+    contractDuration: "12 months",
+    renewalProbability: 75,
+    satisfactionScore: 8.1
+  },
+  {
+    id: 8,
+    name: "Kyber Network - Blockchain Startup",
+    email: "business@kyber.network",
+    phone: "+65 6950 2888",
+    type: "Startup",
+    source: "LinkedIn Campaign",
+    totalValue: 650000000,
+    status: "Khách VIP Bronze",
+    loyaltyPoints: 6500,
+    lifecycle: "Customer",
+    projectId: 9,
+    projectName: "F3 Blockchain Infrastructure",
+    companyName: "F3 Blockchain Lab",
+    level: "F3",
+    industry: "Blockchain & Crypto",
+    leadScore: 82,
+    lastContact: "2025-01-24",
+    contractValue: 650000000,
+    contractDuration: "18 months",
+    renewalProbability: 79,
+    satisfactionScore: 8.4
+  },
+  
+  // F4 Level - Project Division Customers
+  {
+    id: 9,
+    name: "VNG Corporation - Tập đoàn VNG",
+    email: "enterprise@vng.com.vn",
+    phone: "+84 28 7300 7777",
+    type: "SMB",
+    source: "Developer Community",
+    totalValue: 380000000,
+    status: "Khách thường",
+    loyaltyPoints: 3800,
+    lifecycle: "Opportunity",
+    projectId: 11,
+    projectName: "F4 Machine Learning Platform",
+    companyName: "F4 ML Division",
+    level: "F4",
+    industry: "Gaming & Entertainment",
+    leadScore: 76,
+    lastContact: "2025-01-23",
+    contractValue: 380000000,
+    contractDuration: "12 months",
+    renewalProbability: 72,
+    satisfactionScore: 7.9
+  },
+  
+  // F5 Level - Branch Operations Customers
+  {
+    id: 10,
+    name: "Đại học Bách khoa Hà Nội",
+    email: "research@hust.edu.vn",
+    phone: "+84 24 3868 3008",
+    type: "Academic",
+    source: "Academic Network",
+    totalValue: 180000000,
+    status: "Khách thường",
+    loyaltyPoints: 1800,
+    lifecycle: "Customer",
+    projectId: 14,
+    projectName: "F5 R&D Advanced Analytics",
+    companyName: "F5 Research Branch",
+    level: "F5",
+    industry: "Giáo dục & Nghiên cứu",
+    leadScore: 85,
+    lastContact: "2025-01-22",
+    contractValue: 180000000,
+    contractDuration: "36 months",
+    renewalProbability: 88,
+    satisfactionScore: 8.8
   }
 ];
 
 const mockTasks = [
+  // BMC Level - Strategic Tasks
   {
     id: 1,
-    title: "Tối ưu chiến dịch Facebook Q1",
-    assignee: "Nguyễn Văn A",
-    priority: "High",
+    title: "Strategic Partnership Review - Vietcombank Digital Transformation",
+    assignee: "Nguyễn Minh Đức - CEO",
+    priority: "Critical",
     dueDate: "2025-02-15",
     status: "In Progress",
-    progress: 65,
-    description: "Phân tích và tối ưu CTR, CPC cho chiến dịch hiện tại",
-    tags: ["Facebook", "Optimization"],
-    estimatedHours: 12,
-    actualHours: 8,
+    progress: 75,
+    description: "Quarterly business review với Vietcombank về tiến độ chuyển đổi số toàn diện và roadmap 2025-2027",
+    tags: ["Strategic", "Partnership", "Digital Transformation"],
+    estimatedHours: 120,
+    actualHours: 90,
     projectId: 1,
-    projectName: "Dự án ERP Alpha",
-    companyName: "BMC Group",
-    implementationLevel: "Development"
+    projectName: "BMC Digital Transformation 2025",
+    companyName: "BMC Holdings",
+    level: "BMC",
+    implementationLevel: "Strategic",
+    customerId: 1,
+    customerName: "Vietcombank - Ngân hàng TMCP Ngoại thương Việt Nam",
+    estimatedRevenue: 950000000,
+    taskType: "Strategic Review",
+    createdDate: "2025-01-01",
+    stakeholders: ["C-Level Executives", "Board Members"],
+    businessImpact: "Critical - affects entire ecosystem",
+    riskLevel: "Low"
   },
   {
     id: 2,
-    title: "Liên hệ leads warm từ tuần trước",
-    assignee: "Trần Thị B",
-    priority: "High",
-    dueDate: "2025-02-05",
+    title: "Vingroup Ecosystem Integration Planning",
+    assignee: "Trần Thị Lan Anh - CTO",
+    priority: "Critical",
+    dueDate: "2025-02-28",
     status: "Pending",
-    progress: 20,
-    description: "Follow up 45 leads đã tương tác với website",
-    tags: ["Leads", "Follow-up"],
-    estimatedHours: 6,
-    actualHours: 2,
+    progress: 45,
+    description: "Thiết kế kiến trúc tích hợp hệ sinh thái Vingroup với nền tảng BMC, bao gồm VinFast, VinHomes, VinMart",
+    tags: ["Architecture", "Integration", "Ecosystem"],
+    estimatedHours: 200,
+    actualHours: 90,
     projectId: 2,
-    projectName: "Dự án Fintech Beta",
-    companyName: "BMC Invest",
-    implementationLevel: "Planning"
+    projectName: "F1 Technology Ecosystem",
+    companyName: "F1 Tech Corp",
+    level: "BMC",
+    implementationLevel: "Strategic",
+    customerId: 2,
+    customerName: "Vingroup - Tập đoàn Vingroup",
+    estimatedRevenue: 1400000000,
+    taskType: "Architecture Design",
+    createdDate: "2025-01-05",
+    stakeholders: ["Technical Leadership", "Business Units"],
+    businessImpact: "Strategic - multi-industry impact",
+    riskLevel: "Medium"
   },
+  
+  // F1 Level - Corporation Tasks
   {
     id: 3,
-    title: "Chuẩn bị báo cáo doanh thu tháng 1",
-    assignee: "Lê Văn C",
+    title: "FPT Digital Platform Deployment",
+    assignee: "Phạm Văn Hùng - F1 Director",
+    priority: "High",
+    dueDate: "2025-03-15",
+    status: "In Progress",
+    progress: 68,
+    description: "Triển khai nền tảng số F1 Retail cho FPT, tích hợp với hệ thống ERP và CRM hiện tại",
+    tags: ["Deployment", "ERP", "CRM"],
+    estimatedHours: 80,
+    actualHours: 54,
+    projectId: 3,
+    projectName: "F1 Retail Digital Platform",
+    companyName: "F1 Retail Group",
+    level: "F1",
+    implementationLevel: "Development",
+    customerId: 3,
+    customerName: "FPT Corporation - Tập đoàn FPT",
+    estimatedRevenue: 620000000,
+    taskType: "System Deployment",
+    createdDate: "2025-01-10",
+    stakeholders: ["IT Department", "Business Operations"],
+    businessImpact: "High - affects retail operations",
+    riskLevel: "Medium"
+  },
+  {
+    id: 4,
+    title: "Techcombank Financial Services Hub Integration",
+    assignee: "Lê Thị Mai - F1 Finance Lead",
+    priority: "High",
+    dueDate: "2025-04-30",
+    status: "In Progress",
+    progress: 52,
+    description: "Tích hợp hub dịch vụ tài chính F1 với core banking system của Techcombank",
+    tags: ["Banking", "Integration", "Financial Services"],
+    estimatedHours: 150,
+    actualHours: 78,
+    projectId: 4,
+    projectName: "F1 Financial Services Hub",
+    companyName: "F1 Finance Corp",
+    level: "F1",
+    implementationLevel: "Development",
+    customerId: 4,
+    customerName: "Techcombank - Ngân hàng TMCP Kỹ thương Việt Nam",
+    estimatedRevenue: 1080000000,
+    taskType: "System Integration",
+    createdDate: "2025-01-12",
+    stakeholders: ["Banking Operations", "Compliance Team"],
+    businessImpact: "High - financial services expansion",
+    riskLevel: "High"
+  },
+  
+  // F2 Level - Company Tasks
+  {
+    id: 5,
+    title: "Saigon Co.op SaaS Suite Implementation",
+    assignee: "Hoàng Văn Thành - F2 Manager",
     priority: "Medium",
-    dueDate: "2025-02-10",
+    dueDate: "2025-03-30",
+    status: "In Progress",
+    progress: 35,
+    description: "Triển khai bộ giải pháp SaaS F2 cho Saigon Co.op, bao gồm inventory management và customer analytics",
+    tags: ["SaaS", "Inventory", "Analytics"],
+    estimatedHours: 60,
+    actualHours: 21,
+    projectId: 5,
+    projectName: "F2 SaaS Solutions Suite",
+    companyName: "F2 Software Solutions",
+    level: "F2",
+    implementationLevel: "Development",
+    customerId: 5,
+    customerName: "Saigon Co.op - Liên hiệp HTX Thương mại TP.HCM",
+    estimatedRevenue: 285000000,
+    taskType: "SaaS Implementation",
+    createdDate: "2025-01-15",
+    stakeholders: ["Operations Team", "Store Managers"],
+    businessImpact: "Medium - retail efficiency improvement",
+    riskLevel: "Low"
+  },
+  {
+    id: 6,
+    title: "Tiki E-commerce Marketplace Enhancement",
+    assignee: "Nguyễn Thị Hương - F2 Product Lead",
+    priority: "High",
+    dueDate: "2025-04-15",
+    status: "Pending",
+    progress: 20,
+    description: "Nâng cấp marketplace F2 cho Tiki với AI recommendation engine và advanced analytics",
+    tags: ["E-commerce", "AI", "Recommendation"],
+    estimatedHours: 90,
+    actualHours: 18,
+    projectId: 6,
+    projectName: "F2 E-commerce Marketplace",
+    companyName: "F2 Digital Commerce",
+    level: "F2",
+    implementationLevel: "Planning",
+    customerId: 6,
+    customerName: "Tiki Corporation - Công ty TNHH Tiki",
+    estimatedRevenue: 400000000,
+    taskType: "Platform Enhancement",
+    createdDate: "2025-01-18",
+    stakeholders: ["Product Team", "Data Science Team"],
+    businessImpact: "Medium - customer experience improvement",
+    riskLevel: "Medium"
+  },
+  
+  // F3 Level - Startup Tasks
+  {
+    id: 7,
+    title: "Base.vn AI-Powered CRM Customization",
+    assignee: "Đặng Minh Tuấn - F3 Developer",
+    priority: "Medium",
+    dueDate: "2025-03-10",
+    status: "In Progress",
+    progress: 60,
+    description: "Tùy chỉnh CRM F3 với AI cho Base.vn, tích hợp machine learning cho lead scoring",
+    tags: ["CRM", "AI", "Machine Learning"],
+    estimatedHours: 45,
+    actualHours: 27,
+    projectId: 8,
+    projectName: "F3 AI-Powered CRM",
+    companyName: "F3 AI Solutions",
+    level: "F3",
+    implementationLevel: "Development",
+    customerId: 7,
+    customerName: "Base.vn - Startup Fintech",
+    estimatedRevenue: 140000000,
+    taskType: "AI Customization",
+    createdDate: "2025-01-20",
+    stakeholders: ["Development Team", "Sales Team"],
+    businessImpact: "Low-Medium - startup growth support",
+    riskLevel: "Medium"
+  },
+  {
+    id: 8,
+    title: "Kyber Network Blockchain Infrastructure Setup",
+    assignee: "Vũ Đình Nam - F3 Blockchain Expert",
+    priority: "High",
+    dueDate: "2025-02-28",
     status: "Completed",
     progress: 100,
-    description: "Tổng hợp báo cáo chi tiết theo kênh và sản phẩm",
-    tags: ["Report", "Revenue"],
-    estimatedHours: 8,
-    actualHours: 7,
-    projectId: 3,
-    projectName: "Dự án AI Gamma",
-    companyName: "BMC Tech",
-    implementationLevel: "Deployed"
+    description: "Thiết lập hạ tầng blockchain F3 cho Kyber Network, bao gồm smart contracts và DeFi protocols",
+    tags: ["Blockchain", "Smart Contracts", "DeFi"],
+    estimatedHours: 70,
+    actualHours: 68,
+    projectId: 9,
+    projectName: "F3 Blockchain Infrastructure",
+    companyName: "F3 Blockchain Lab",
+    level: "F3",
+    implementationLevel: "Deployed",
+    customerId: 8,
+    customerName: "Kyber Network - Blockchain Startup",
+    estimatedRevenue: 220000000,
+    taskType: "Blockchain Development",
+    createdDate: "2025-01-08",
+    stakeholders: ["Blockchain Team", "Security Team"],
+    businessImpact: "Medium - DeFi ecosystem expansion",
+    riskLevel: "High"
+  },
+  
+  // F4 Level - Project Division Tasks
+  {
+    id: 9,
+    title: "VNG Machine Learning Platform Optimization",
+    assignee: "Bùi Thị Nga - F4 ML Engineer",
+    priority: "Medium",
+    dueDate: "2025-04-20",
+    status: "Pending",
+    progress: 15,
+    description: "Tối ưu hóa nền tảng ML F4 cho VNG, cải thiện performance và scalability cho gaming analytics",
+    tags: ["Machine Learning", "Gaming", "Performance"],
+    estimatedHours: 35,
+    actualHours: 5,
+    projectId: 11,
+    projectName: "F4 Machine Learning Platform",
+    companyName: "F4 ML Division",
+    level: "F4",
+    implementationLevel: "Planning",
+    customerId: 9,
+    customerName: "VNG Corporation - Tập đoàn VNG",
+    estimatedRevenue: 125000000,
+    taskType: "Platform Optimization",
+    createdDate: "2025-01-25",
+    stakeholders: ["ML Team", "Gaming Division"],
+    businessImpact: "Low - specialized gaming analytics",
+    riskLevel: "Low"
+  },
+  
+  // F5 Level - Branch Operations Tasks
+  {
+    id: 10,
+    title: "HUST R&D Advanced Analytics Implementation",
+    assignee: "Cao Văn Đức - F5 Research Analyst",
+    priority: "Low",
+    dueDate: "2025-05-30",
+    status: "In Progress",
+    progress: 40,
+    description: "Triển khai hệ thống phân tích nâng cao F5 cho nghiên cứu khoa học tại Đại học Bách khoa Hà Nội",
+    tags: ["Research", "Analytics", "Academic"],
+    estimatedHours: 25,
+    actualHours: 10,
+    projectId: 14,
+    projectName: "F5 R&D Advanced Analytics",
+    companyName: "F5 Research Branch",
+    level: "F5",
+    implementationLevel: "Development",
+    customerId: 10,
+    customerName: "Đại học Bách khoa Hà Nội",
+    estimatedRevenue: 60000000,
+    taskType: "Research Analytics",
+    createdDate: "2025-01-30",
+    stakeholders: ["Research Faculty", "Graduate Students"],
+    businessImpact: "Low - academic research support",
+    riskLevel: "Low"
   }
 ];
 
@@ -431,17 +1002,17 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
           <div>
             <h1 className="text-3xl font-bold flex items-center">
               <TrendingUp className="h-8 w-8 mr-3 text-blue-600" />
-              Kinh doanh - Marketing
+              Phòng Kinh doanh
             </h1>
             <p className="text-muted-foreground mt-2">
-              CRM, Pipeline bán hàng, Chiến dịch Marketing & Báo cáo Realtime
+              CRM, Pipeline bán hàng, Quản lý khách hàng & Báo cáo Realtime
             </p>
           </div>
         </div>
         <div className="flex space-x-2">
           <Button variant="outline">
             <Bot className="h-4 w-4 mr-2" />
-            Sales AI Agent
+            Sales Agent
           </Button>
           <Button onClick={() => setIsCreateCampaignOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
@@ -517,7 +1088,7 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
           <CardHeader className="pb-2">
             <CardTitle className="text-sm flex items-center">
               <BarChart3 className="h-4 w-4 mr-2 text-orange-600" />
-              Marketing ROI
+              Sales ROI
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -537,7 +1108,7 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">📊 Tổng quan</TabsTrigger>
-          <TabsTrigger value="campaigns">📢 Chiến dịch</TabsTrigger>
+          <TabsTrigger value="campaigns">💼 Chiến dịch Sales</TabsTrigger>
           <TabsTrigger value="customers">👥 Khách hàng</TabsTrigger>
           <TabsTrigger value="tasks">📋 Công việc</TabsTrigger>
           <TabsTrigger value="reports">📈 Báo cáo</TabsTrigger>
@@ -648,7 +1219,7 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
         {/* Campaigns Tab */}
         <TabsContent value="campaigns" className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Quản lý Chiến dịch Marketing</h3>
+            <h3 className="text-lg font-semibold">Quản lý Chiến dịch Sales</h3>
             <div className="flex space-x-2">
               <Button variant="outline">
                 <Filter className="h-4 w-4 mr-2" />
@@ -656,7 +1227,7 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
               </Button>
               <Button onClick={() => setIsCreateCampaignOpen(true)}>
                 <Plus className="h-4 w-4 mr-2" />
-                Tạo chiến dịch
+                Tạo chiến dịch sales
               </Button>
             </div>
           </div>
@@ -677,7 +1248,7 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockCampaigns.map((campaign) => (
+                  {mockSalesCampaigns.map((campaign) => (
                     <TableRow key={campaign.id}>
                       <TableCell>
                         <div>
@@ -1044,8 +1615,8 @@ export function SalesMarketingDetailView({ onBack, organizations }: SalesMarketi
               <CardContent>
                 <div className="space-y-4 mb-4">
                   {mockProjects.map((project, index) => {
-                    const campaignCount = mockCampaigns.filter(c => c.projectId === project.id).length;
-                    const totalROI = mockCampaigns
+                    const campaignCount = mockSalesCampaigns.filter(c => c.projectId === project.id).length;
+                const totalROI = mockSalesCampaigns
                       .filter(c => c.projectId === project.id)
                       .reduce((sum, c) => sum + c.roi, 0) / campaignCount || 0;
                     

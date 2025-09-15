@@ -18,8 +18,26 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
   const [activeView, setActiveView] = useState<"overview" | "f4-branch" | "f5-startup" | "auto-tiering" | "data-entry">("overview");
   const [selectedProject, setSelectedProject] = useState<any>(null);
 
-  // Mock data for F4-F5 projects - đã xóa bỏ tất cả các dự án để khởi tạo mới
-  const f4f5Projects: any[] = [];
+  // Filter F4 and F5 companies from database
+  const f4f5Projects = organizations
+    .filter(org => org.organizations?.level === 'F4' || org.organizations?.level === 'F5')
+    .map(org => ({
+      id: org.organizations.id,
+      name: org.organizations.name,
+      level: org.organizations.level,
+      type: org.organizations.level === 'F4' ? 'branch' : 'startup',
+      sector: org.organizations.industry || 'Chưa xác định',
+      bmcOwnership: org.organizations.bmc_equity_percentage || 0,
+      monthlyRevenue: 0, // Sẽ được cập nhật từ báo cáo
+      currentStaff: 0, // Sẽ được cập nhật từ HR
+      kpiAverage4Quarters: 0, // Sẽ được cập nhật từ KPI
+      progressPercentage: 0, // Sẽ được tính toán
+      tieringProgress: 0, // Sẽ được tính toán
+      autoTieringStatus: 'developing', // Sẽ được tính toán dựa trên KPI và equity
+      nextTierTarget: org.organizations.level === 'F4' ? 'F3' : 'F4',
+      establishedDate: new Date(org.organizations.created_at).toLocaleDateString('vi-VN'),
+      code: org.organizations.code
+    }));
 
   const formatCurrency = (amount: number) => {
     if (amount >= 1000000000) {
@@ -252,8 +270,21 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {f4f5Projects.map((project) => (
-              <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleProjectSelect(project)}>
+            {f4f5Projects.length === 0 ? (
+              <div className="text-center py-8">
+                <div className="text-muted-foreground mb-4">
+                  <Building2 className="w-16 h-16 mx-auto" />
+                </div>
+                <h4 className="text-lg font-medium mb-2">Chưa có công ty F4-F5 nào</h4>
+                <p className="text-muted-foreground mb-4">Hiện tại chưa có công ty F4 hoặc F5 nào trong hệ thống.</p>
+                <Button onClick={() => setActiveView("data-entry")}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Thêm Công Ty F4-F5
+                </Button>
+              </div>
+            ) : (
+              f4f5Projects.map((project) => (
+                <Card key={project.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleProjectSelect(project)}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -315,8 +346,9 @@ export function ProjectManagementView({ organizations }: ProjectManagementViewPr
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+                </Card>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

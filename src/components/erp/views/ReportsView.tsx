@@ -375,15 +375,27 @@ export function ReportsView({ organizations }: ReportsViewProps) {
 
       if (consolidatedError) throw consolidatedError;
 
-      // Load department reports (using mock data as tables don't exist yet)
-      const departmentData = [];
-      const departmentError = null;
+      // Load department reports from new database table
+      const { data: departmentData, error: departmentError } = await supabase
+        .from('department_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      // Load company reports (using mock data as tables don't exist yet)
-      const companyData = [];
-      const companyError = null;
+      if (departmentError) {
+        console.warn('Department reports table not found, using mock data:', departmentError);
+      }
 
-      // Use mock data as fallback if no real data exists
+      // Load company reports from new database table
+      const { data: companyData, error: companyError } = await supabase
+        .from('company_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (companyError) {
+        console.warn('Company reports table not found, using mock data:', companyError);
+      }
+
+      // Use real data if available, fallback to mock data
       const finalConsolidatedData = consolidatedData?.length ? consolidatedData : [];
       const finalDepartmentData = departmentData?.length ? departmentData : Object.values(mockDepartmentReports);
       const finalCompanyData = companyData?.length ? companyData : (Array.isArray(mockReportData) ? mockReportData : Object.values(mockReportData));
@@ -391,6 +403,12 @@ export function ReportsView({ organizations }: ReportsViewProps) {
       setConsolidatedReports(finalConsolidatedData);
       setDepartmentReports(finalDepartmentData);
       setRealTimeReports([...finalCompanyData, ...finalDepartmentData]);
+
+      console.log('Loaded reports:', {
+        consolidated: finalConsolidatedData.length,
+        departments: finalDepartmentData.length,
+        companies: finalCompanyData.length
+      });
 
       // Update dashboard metrics based on real data
       const totalReports = finalConsolidatedData.length + finalDepartmentData.length + finalCompanyData.length;
@@ -446,15 +464,19 @@ export function ReportsView({ organizations }: ReportsViewProps) {
       };
 
       // Store insights in Supabase
-      await supabase
-        .from('ai_insights')
-        .upsert({
-          user_id: user.id,
-          entity_type: 'aggregated_reports',
-          entity_id: 'bmc_ecosystem',
-          insights: aiInsights,
-          created_at: new Date().toISOString()
-        });
+      try {
+        await supabase
+          .from('ai_insights')
+          .upsert({
+            user_id: user.id,
+            entity_type: 'aggregated_reports',
+            entity_id: 'bmc_ecosystem',
+            insights: aiInsights,
+            created_at: new Date().toISOString()
+          });
+      } catch (error) {
+        console.warn('AI insights table not found, skipping database insert:', error);
+      }
 
     } catch (error) {
       console.error('Error generating aggregated insights:', error);

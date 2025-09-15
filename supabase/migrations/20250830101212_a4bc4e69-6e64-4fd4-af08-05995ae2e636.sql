@@ -1,17 +1,4 @@
--- Create BMC CEO account data in profiles table
--- Note: The actual auth user will need to be created via signup in the application
--- This creates a placeholder profile for the CEO account
-
--- Insert BMC CEO profile (user will need to sign up with this email)
-INSERT INTO public.profiles (id, full_name, email, avatar_url) 
-VALUES (
-  'bmc-ceo-placeholder-id'::uuid, 
-  'Lý Hoàng Hải - CEO BMC Group',
-  'lyhoanghaiceo@gmail.com',
-  NULL
-) ON CONFLICT (email) DO NOTHING;
-
--- Create BMC Group organization at F0 level (100% BMC ownership)
+-- Create BMC Group organization at F1 level (100% BMC ownership)
 INSERT INTO public.organizations (
   id,
   name,

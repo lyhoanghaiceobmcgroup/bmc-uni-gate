@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,10 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import { ShareholderView } from "./ShareholderView";
+import { ShareholderView as ShareholderDetailView } from "./ShareholderView";
 import { SalesMarketingDetailView } from "./SalesMarketingDetailView";
+import { SalesDetailPage } from "./SalesDetailPage";
+import { MarketingDetailView } from "./MarketingDetailView";
 import { FinanceAccountingDetailView } from "./FinanceAccountingDetailView";
 import { HRTrainingDetailView } from "./HRTrainingDetailView";
 import { ProductionSupplyChainDetailView } from "./ProductionSupplyChainDetailView";
@@ -319,8 +321,31 @@ const departments = [
   }
 ];
 
+// Map department names to folder names
+const getDepartmentFolderName = (department: string) => {
+  const folderMap = {
+    "shareholder": "Phòng cổ đông",
+    "sales": "Phòng kinh doanh",
+    "kinh doanh": "Phòng kinh doanh",
+    "marketing": "Phòng marketing",
+    "finance-accounting": "Phòng Tài chính",
+    "accounting": "Phòng Kế toán",
+    "hr": "Phòng Nhân sự",
+    "training": "Phòng Đào tạo",
+    "hr-training": "Phòng Nhân sự",
+    "production": "Phòng sản xuất",
+    "warehouse": "Phòng kho vận",
+    "production-supply": "Phòng sản xuất",
+    "strategy-rd": "Phòng chiến lược",
+    "technology-it": "Phòng công nghệ",
+    "legal-compliance": "Phòng pháp chế",
+    "investment-capital": "Phòng Đầu tư vốn"
+  };
+  return folderMap[department] || department;
+};
+
 export function DepartmentView({ organizations, onViewShareholders }: DepartmentViewProps) {
-  const [detailView, setDetailView] = useState<"overview" | "shareholder" | "sales-marketing" | "finance-accounting" | "accounting" | "hr" | "training" | "hr-training" | "production" | "warehouse" | "production-supply" | "strategy-rd" | "technology-it" | "legal-compliance" | "investment-capital">("overview");
+  const [detailView, setDetailView] = useState<"overview" | "shareholder" | "sales-marketing" | "sales-detail" | "finance-accounting" | "accounting" | "hr" | "training" | "hr-training" | "production" | "warehouse" | "production-supply" | "strategy-rd" | "technology-it" | "legal-compliance" | "investment-capital">("overview");
   const [realDepartments, setRealDepartments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -341,15 +366,279 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
   const [isDraft, setIsDraft] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [departmentData, setDepartmentData] = useState(departments);
+  const [allCompanyReports, setAllCompanyReports] = useState([]);
+  const [aggregatedData, setAggregatedData] = useState(null);
+  const [realtimeSubscription, setRealtimeSubscription] = useState(null);
+  const [departmentFolderData, setDepartmentFolderData] = useState({});
   const { user } = useAuth();
+
+  // Generate aggregated data for departments from all company reports
+  const generateDepartmentAggregatedData = useCallback((reports) => {
+    if (!reports || reports.length === 0) {
+      setAggregatedData(null);
+      return;
+    }
+
+    // Calculate aggregated metrics
+    const totalRevenue = reports.reduce((sum, report) => {
+      const revenue = parseFloat(report.revenue) || 0;
+      return sum + revenue;
+    }, 0);
+
+    const totalEmployees = reports.reduce((sum, report) => {
+      const employees = parseInt(report.employee_count) || 0;
+      return sum + employees;
+    }, 0);
+
+    const averageKPI = reports.length > 0 ? 
+      reports.reduce((sum, report) => {
+        const kpi = parseFloat(report.kpi_score) || 0;
+        return sum + kpi;
+      }, 0) / reports.length : 0;
+
+    // Group by department for breakdown
+    const departmentBreakdown = {};
+    reports.forEach(report => {
+      const dept = report.department || 'Chưa phân loại';
+      if (!departmentBreakdown[dept]) {
+        departmentBreakdown[dept] = {
+          count: 0,
+          revenue: 0,
+          employees: 0,
+          avgKPI: 0
+        };
+      }
+      departmentBreakdown[dept].count += 1;
+      departmentBreakdown[dept].revenue += parseFloat(report.revenue) || 0;
+      departmentBreakdown[dept].employees += parseInt(report.employee_count) || 0;
+      departmentBreakdown[dept].avgKPI += parseFloat(report.kpi_score) || 0;
+    });
+
+    // Calculate averages for each department
+    Object.keys(departmentBreakdown).forEach(dept => {
+      const data = departmentBreakdown[dept];
+      data.avgKPI = data.count > 0 ? data.avgKPI / data.count : 0;
+    });
+
+    const aggregated = {
+      totalRevenue,
+      totalEmployees,
+      averageKPI,
+      totalReports: reports.length,
+      departmentBreakdown,
+      lastUpdated: new Date().toISOString()
+    };
+
+    setAggregatedData(aggregated);
+    console.log('📊 Generated department aggregated data:', aggregated);
+  }, []);
+
+
+
+  // Read data from department folder
+  const readDepartmentFolderData = useCallback(async (departmentName: string) => {
+    try {
+      const folderName = getDepartmentFolderName(departmentName);
+      console.log(`📂 Reading data from folder: ${folderName}`);
+      
+      // In a real implementation, this would read from the file system
+      // For now, we'll simulate reading from the data folder structure
+      const mockData = {
+        folderPath: `data/${folderName}`,
+        companies: [],
+        totalReports: 0,
+        lastUpdated: new Date().toISOString(),
+        aggregatedMetrics: {
+          totalRevenue: 0,
+          totalEmployees: 0,
+          averageKPI: 0,
+          activeCompanies: 0
+        }
+      };
+
+      // Simulate reading company folders and data files
+      // This would be replaced with actual file system operations
+      const companyFolders = ['Công ty ABC', 'Công ty XYZ', 'Công ty DEF'];
+      
+      for (const companyFolder of companyFolders) {
+        const companyData = {
+          name: companyFolder,
+          folderPath: `data/${folderName}/${companyFolder}`,
+          reports: [],
+          lastReport: null,
+          metrics: {
+            revenue: Math.floor(Math.random() * 1000000000),
+            employees: Math.floor(Math.random() * 500),
+            kpi: Math.floor(Math.random() * 100)
+          }
+        };
+        
+        // Simulate reading JSON files from company folder
+        const reportFiles = ['daily_financial_report.json', 'hr_daily_report.json', 'sales_daily_report.json'];
+        companyData.reports = reportFiles.map(file => ({
+          fileName: file,
+          filePath: `data/${folderName}/${companyFolder}/${file}`,
+          lastModified: new Date().toISOString(),
+          size: Math.floor(Math.random() * 10000)
+        }));
+        
+        mockData.companies.push(companyData);
+        mockData.totalReports += companyData.reports.length;
+        mockData.aggregatedMetrics.totalRevenue += companyData.metrics.revenue;
+        mockData.aggregatedMetrics.totalEmployees += companyData.metrics.employees;
+        mockData.aggregatedMetrics.averageKPI += companyData.metrics.kpi;
+      }
+      
+      mockData.aggregatedMetrics.activeCompanies = mockData.companies.length;
+      mockData.aggregatedMetrics.averageKPI = mockData.aggregatedMetrics.averageKPI / mockData.companies.length;
+      
+      // Store the data for the specific department
+      setDepartmentFolderData(prev => ({
+        ...prev,
+        [departmentName]: mockData
+      }));
+      
+      toast.success(`Đã tải dữ liệu từ ${folderName}: ${mockData.companies.length} công ty, ${mockData.totalReports} báo cáo`);
+      
+      return mockData;
+    } catch (error) {
+      console.error('Error reading department folder data:', error);
+      toast.error('Lỗi khi đọc dữ liệu từ thư mục phòng ban');
+      return null;
+    }
+  }, []);
 
   // Load departments from database
   useEffect(() => {
     loadDepartments();
   }, [user]);
 
+  // Load all company reports function
+  const loadAllCompanyReports = useCallback(async () => {
+    try {
+      const { data: companyReports, error } = await supabase
+        .from('company_reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Company reports table not found, using mock data:', error);
+        setAllCompanyReports([]);
+        return;
+      }
+
+      setAllCompanyReports(companyReports || []);
+      
+      // Generate aggregated insights for departments
+      generateDepartmentAggregatedData(companyReports || []);
+      
+    } catch (error) {
+      console.error('Error loading company reports:', error);
+      setAllCompanyReports([]);
+    }
+  }, [generateDepartmentAggregatedData]);
+
+  // Load company reports after component mounts
+  useEffect(() => {
+    loadAllCompanyReports();
+  }, [loadAllCompanyReports]);
+
+  // Setup enhanced realtime subscription for department folder synchronization
+  useEffect(() => {
+    if (!user) return;
+
+    const setupDepartmentRealtimeSync = async () => {
+      try {
+        console.log("🔄 Setting up enhanced realtime sync for department folders...");
+        
+        // Subscribe to company_reports table changes with department folder updates
+        const subscription = supabase
+          .channel('department_folder_sync')
+          .on(
+            'postgres_changes',
+            {
+              event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+              schema: 'public',
+              table: 'company_reports'
+            },
+            async (payload) => {
+              console.log('📊 Company report change detected for department sync:', payload);
+              
+              // Determine which department folder to update
+              let departmentToUpdate = null;
+              
+              if (payload.new?.report_data) {
+                // Find the department type from report data
+                const newReportData = payload.new.report_data;
+                if (typeof newReportData === 'object') {
+                  const departmentKeys = Object.keys(newReportData);
+                  if (departmentKeys.length > 0) {
+                    departmentToUpdate = departmentKeys[0]; // Use first department found
+                  }
+                }
+              }
+              
+              // If we can't determine from report_data, try to infer from company name or other fields
+              if (!departmentToUpdate && payload.new?.company_name) {
+                // Simple heuristic to map company to department
+                const companyName = payload.new.company_name.toLowerCase();
+                if (companyName.includes('tài chính') || companyName.includes('finance')) {
+                  departmentToUpdate = 'finance-accounting';
+                } else if (companyName.includes('nhân sự') || companyName.includes('hr')) {
+                  departmentToUpdate = 'hr';
+                } else if (companyName.includes('kinh doanh') || companyName.includes('sales')) {
+                  departmentToUpdate = 'sales';
+                } else {
+                  // Default to sales if can't determine
+                  departmentToUpdate = 'sales';
+                }
+              }
+              
+              // Update the specific department folder data
+              if (departmentToUpdate) {
+                await readDepartmentFolderData(departmentToUpdate);
+                console.log(`📂 Updated department folder data for: ${departmentToUpdate}`);
+              }
+              
+              // Also refresh general company reports
+              loadAllCompanyReports();
+              
+              // Show notification based on event type
+              if (payload.eventType === 'INSERT') {
+                toast.success(`📂 Dữ liệu mới từ ${payload.new?.company_name || 'công ty'} đã được đồng bộ vào thư mục phòng ban`);
+              } else if (payload.eventType === 'UPDATE') {
+                toast.info(`📂 Cập nhật dữ liệu từ ${payload.new?.company_name || 'công ty'} trong thư mục phòng ban`);
+              } else if (payload.eventType === 'DELETE') {
+                toast.warning(`📂 Xóa dữ liệu từ ${payload.old?.company_name || 'công ty'} khỏi thư mục phòng ban`);
+              }
+            }
+          )
+          .subscribe();
+
+        setRealtimeSubscription(subscription);
+        console.log("✅ Enhanced department folder realtime sync established");
+        
+      } catch (error) {
+        console.error('❌ Error setting up department folder realtime sync:', error);
+        toast.error('Lỗi khi thiết lập đồng bộ realtime cho thư mục phòng ban');
+      }
+    };
+
+    setupDepartmentRealtimeSync();
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (realtimeSubscription) {
+        console.log("🧹 Cleaning up department folder realtime subscription");
+        supabase.removeChannel(realtimeSubscription);
+      }
+    };
+  }, [user, readDepartmentFolderData, loadAllCompanyReports]);
+
+
+
   const resetAllDepartmentData = () => {
-    const resetDepartments = departmentData.map(dept => ({
+    const resetDepartmentsList = departmentData.map(dept => ({
       ...dept,
       members: 0,
       kpi: 0,
@@ -371,7 +660,9 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
       }, {} as any)
     }));
     
-    setDepartmentData(resetDepartments);
+    setDepartmentData(resetDepartmentsList);
+    setAllCompanyReports([]);
+    setAggregatedData(null);
   };
 
   const loadDepartments = async () => {
@@ -428,13 +719,20 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
     }
   };
 
-  const handleCardClick = (department: string) => {
+  const handleDeptCardClick = async (department: string) => {
     console.log("🏢 Department card clicked:", department);
+    
+    // Read data from corresponding department folder
+    await readDepartmentFolderData(department);
+    
     if (department === "shareholder") {
       setDetailView("shareholder");
     } else if (department === "sales") {
-      console.log("🎯 Setting detailView to sales");
-      setDetailView("sales");
+      console.log("🎯 Setting detailView to sales-detail");
+      setDetailView("sales-detail");
+    } else if (department === "kinh doanh") {
+      console.log("🎯 Setting detailView to sales-detail for Kinh doanh");
+      setDetailView("sales-detail");
     } else if (department === "marketing") {
       console.log("📢 Setting detailView to marketing");
       setDetailView("marketing");
@@ -712,12 +1010,16 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
 
       // Insert insights into database
       if (insights.length > 0) {
-        const { error } = await supabase
-          .from('ai_insights')
-          .insert(insights);
+        try {
+          const { error } = await supabase
+            .from('ai_insights')
+            .insert(insights);
 
-        if (error) {
-          console.error('Error inserting AI insights:', error);
+          if (error) {
+            console.warn('AI insights table not found, skipping database insert:', error);
+          }
+        } catch (error) {
+          console.warn('Error inserting AI insights, table may not exist:', error);
         }
       }
     } catch (error) {
@@ -726,63 +1028,113 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
   };
 
   if (detailView === "shareholder") {
-    return <ShareholderView onBack={() => setDetailView("overview")} />;
+    return <ShareholderDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['shareholder']}
+    />;
   }
 
   if (detailView === "sales") {
     return <SalesMarketingDetailView onBack={() => setDetailView("overview")} organizations={organizations} />;
   }
 
+  if (detailView === "sales-detail") {
+    return <SalesDetailPage 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['sales'] || departmentFolderData['kinh doanh']}
+    />;
+  }
+
   if (detailView === "marketing") {
-    return <SalesMarketingDetailView onBack={() => setDetailView("overview")} organizations={organizations} />;
+    return <MarketingDetailView 
+      onBack={() => setDetailView("overview")} 
+      organizations={organizations}
+      departmentData={departmentFolderData['marketing']}
+    />;
   }
 
   if (detailView === "finance-accounting") {
-    return <FinanceAccountingDetailView onBack={() => setDetailView("overview")} />;
+    return <FinanceAccountingDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['finance-accounting']}
+    />;
   }
 
   if (detailView === "accounting") {
-    return <AccountingDetailView onBack={() => setDetailView("overview")} />;
+    return <AccountingDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['accounting']}
+    />;
   }
 
   if (detailView === "hr") {
-    return <HRTrainingDetailView onBack={() => setDetailView("overview")} />;
+    return <HRTrainingDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['hr']}
+    />;
   }
 
   if (detailView === "training") {
-    return <TrainingDetailView onBack={() => setDetailView("overview")} />;
+    return <TrainingDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['training']}
+    />;
   }
 
   if (detailView === "hr-training") {
-    return <HRTrainingDetailView onBack={() => setDetailView("overview")} />;
+    return <HRTrainingDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['hr-training']}
+    />;
   }
 
   if (detailView === "production") {
-    return <ProductionDetailView onBack={() => setDetailView("overview")} />;
+    return <ProductionDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['production']}
+    />;
   }
 
   if (detailView === "warehouse") {
-    return <WarehouseDetailView onBack={() => setDetailView("overview")} />;
+    return <WarehouseDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['warehouse']}
+    />;
   }
 
   if (detailView === "production-supply") {
-    return <ProductionSupplyChainDetailView onBack={() => setDetailView("overview")} />;
+    return <ProductionSupplyChainDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['production-supply']}
+    />;
   }
 
   if (detailView === "strategy-rd") {
-    return <StrategyRDDetailView onBack={() => setDetailView("overview")} />;
+    return <StrategyRDDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['strategy-rd']}
+    />;
   }
 
   if (detailView === "technology-it") {
-    return <TechnologyITDetailView onBack={() => setDetailView("overview")} />;
+    return <TechnologyITDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['technology-it']}
+    />;
   }
 
   if (detailView === "legal-compliance") {
-    return <LegalComplianceDetailView onBack={() => setDetailView("overview")} />;
+    return <LegalComplianceDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['legal-compliance']}
+    />;
   }
 
   if (detailView === "investment-capital") {
-    return <InvestmentCapitalDetailView onBack={() => setDetailView("overview")} />;
+    return <InvestmentCapitalDetailView 
+      onBack={() => setDetailView("overview")} 
+      departmentData={departmentFolderData['investment-capital']}
+    />;
   }
 
   return (
@@ -871,6 +1223,160 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
         </Card>
       </div>
 
+      {/* Department Folder Data */}
+      {Object.keys(departmentFolderData).length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              📂 Dữ liệu từ thư mục phòng ban
+              <Badge variant="secondary">{Object.keys(departmentFolderData).length} phòng ban đã tải</Badge>
+            </h2>
+            <Button variant="outline" size="sm">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Xuất báo cáo
+            </Button>
+          </div>
+          
+          {/* Department Folder Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {Object.entries(departmentFolderData).map(([deptName, data]) => (
+              <Card key={deptName} className="border-indigo-200 bg-indigo-50 dark:bg-indigo-950/20">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm text-indigo-700 dark:text-indigo-300">
+                    {getDepartmentFolderName(deptName)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-1">
+                    <div className="text-lg font-bold text-indigo-600">
+                      {data.companies.length} công ty
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {data.totalReports} báo cáo
+                    </div>
+                    <div className="text-xs text-green-600">
+                      Doanh thu: {data.aggregatedMetrics.totalRevenue.toLocaleString('vi-VN')} VNĐ
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Company Reports Aggregation */}
+      {allCompanyReports.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              📊 Dữ liệu tổng hợp từ tất cả công ty (Supabase)
+              <Badge variant="secondary">{allCompanyReports.length} báo cáo</Badge>
+            </h2>
+            <Button variant="outline" size="sm">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Xuất báo cáo
+            </Button>
+          </div>
+          
+          {/* Aggregated Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="border-blue-200 bg-blue-50 dark:bg-blue-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-blue-700 dark:text-blue-300">Tổng Doanh Thu</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-blue-600">
+                  {aggregatedData.totalRevenue.toLocaleString('vi-VN')} VNĐ
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Từ {aggregatedData.totalCompanies} công ty
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-green-200 bg-green-50 dark:bg-green-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-green-700 dark:text-green-300">Tổng Nhân Viên</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">
+                  {aggregatedData.totalEmployees.toLocaleString('vi-VN')}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Trên tất cả công ty
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-purple-200 bg-purple-50 dark:bg-purple-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-purple-700 dark:text-purple-300">KPI Trung Bình</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">
+                  {aggregatedData.averageKPI}%
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Hiệu suất chung
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-orange-200 bg-orange-50 dark:bg-orange-950/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-orange-700 dark:text-orange-300">Báo Cáo Gần Nhất</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">
+                  {aggregatedData.latestReportDays}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  ngày trước
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Recent Company Reports */}
+          <div className="space-y-3">
+            <h3 className="text-lg font-medium">Báo cáo gần đây</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allCompanyReports.slice(0, 6).map((report, index) => (
+                <Card key={report.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-sm">{report.company_name || `Công ty ${index + 1}`}</CardTitle>
+                      <Badge variant="outline" className="text-xs">
+                        {new Date(report.created_at).toLocaleDateString('vi-VN')}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Doanh thu:</span>
+                        <span className="font-medium text-green-600">
+                          {(report.revenue || 0).toLocaleString('vi-VN')} VNĐ
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Nhân viên:</span>
+                        <span className="font-medium">{report.employee_count || 0}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>KPI:</span>
+                        <span className="font-medium text-blue-600">{report.kpi_score || 0}%</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Real Departments from Database */}
       {realDepartments.length > 0 && (
         <div className="space-y-4">
@@ -953,7 +1459,7 @@ export function DepartmentView({ organizations, onViewShareholders }: Department
             <Card 
               key={dept.id}
               className={`cursor-pointer hover:shadow-lg transition-all duration-300 border-2 ${borderColor} hover:border-primary/20 ${dept.bgColor}`}
-              onClick={() => handleCardClick(dept.id === 1 ? "shareholder" : dept.name.toLowerCase())}
+              onClick={() => handleDeptCardClick(dept.id === 1 ? "shareholder" : dept.name.toLowerCase())}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">

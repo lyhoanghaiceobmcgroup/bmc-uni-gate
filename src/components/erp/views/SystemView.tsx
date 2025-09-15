@@ -148,16 +148,24 @@ export function SystemView({ organizations }: SystemViewProps) {
       }
 
       // Transform data to match our mock structure
-      const transformedUsers = userRoles?.map(userRole => ({
-        id: userRole.user_id,
-        email: `user-${userRole.user_id.substring(0, 8)}@company.com`,
-        fullName: `User ${userRole.user_id.substring(0, 8)}`,
-        role: userRole.role || 'user',
-        level: userRole.organizations?.level || 'N/A',
-        status: 'active',
-        lastLogin: new Date().toLocaleString('vi-VN'),
-        permissions: ['view_basic']
-      })) || [];
+      // Group by user_id to avoid duplicate keys
+      const userMap = new Map();
+      userRoles?.forEach(userRole => {
+        const userId = userRole.user_id;
+        if (!userMap.has(userId)) {
+          userMap.set(userId, {
+            id: userId,
+            email: `user-${userId.substring(0, 8)}@company.com`,
+            fullName: `User ${userId.substring(0, 8)}`,
+            role: userRole.role || 'user',
+            level: userRole.organizations?.level || 'N/A',
+            status: 'active',
+            lastLogin: new Date().toLocaleString('vi-VN'),
+            permissions: ['view_basic']
+          });
+        }
+      });
+      const transformedUsers = Array.from(userMap.values());
 
       setUsers(transformedUsers);
     } catch (error) {

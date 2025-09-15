@@ -63,41 +63,41 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
   };
 
   const reportTypes = [
-    { id: "financial", name: "Báo cáo Tài chính", icon: DollarSign, color: "text-green-600" },
-    { id: "hr", name: "Báo cáo Nhân sự", icon: Users, color: "text-blue-600" },
-    { id: "operations", name: "Báo cáo Vận hành", icon: TrendingUp, color: "text-purple-600" },
-    { id: "compliance", name: "Báo cáo Tuân thủ", icon: FileText, color: "text-orange-600" }
+    { id: "financial", name: "Báo cáo Tài chính", icon: DollarSign, color: "text-green-400" },
+    { id: "hr", name: "Báo cáo Nhân sự", icon: Users, color: "text-blue-400" },
+    { id: "operations", name: "Báo cáo Vận hành", icon: TrendingUp, color: "text-purple-400" },
+    { id: "compliance", name: "Báo cáo Tuân thủ", icon: FileText, color: "text-orange-400" }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 p-4">
       <div className="max-w-4xl mx-auto">
-        <Card>
-          <CardHeader>
+        <Card className="bg-gray-800/95 backdrop-blur-md border-gray-700/50">
+          <CardHeader className="bg-gradient-to-r from-gray-900 via-slate-800 to-gray-900 border-b border-gray-700/50">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <FileText className="h-6 w-6 text-primary" />
+                <FileText className="h-6 w-6 text-blue-400" />
                 <div>
-                  <CardTitle className="text-2xl">Form Báo cáo BMC ERP-AI</CardTitle>
+                  <CardTitle className="text-2xl text-white">Form Báo cáo BMC ERP-AI</CardTitle>
                   {companyInfo && (
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm text-gray-300 mt-1">
                       <Building2 className="inline h-4 w-4 mr-1" />
                       {companyInfo.name} ({companyInfo.taxId})
                     </p>
                   )}
                 </div>
               </div>
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={onClose} className="text-gray-300 hover:text-white hover:bg-gray-700/50 border-gray-600/50">
                 Đóng
               </Button>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-gray-300">
               Điền thông tin báo cáo theo từng lĩnh vực. Dữ liệu sẽ được đồng bộ với hệ thống ERP-AI.
             </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="bg-gray-800/50">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-4 bg-gray-700/50 border-gray-600/50">
                 {reportTypes.map((type) => {
                   const Icon = type.icon;
                   return (
@@ -111,10 +111,10 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
 
               {/* Financial Report */}
               <TabsContent value="financial" className="space-y-4">
-                <Card>
+                <Card className="bg-gray-700/30 border-gray-600/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <DollarSign className="h-5 w-5 text-green-600" />
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <DollarSign className="h-5 w-5 text-green-400" />
                       Báo cáo Tài chính
                     </CardTitle>
                   </CardHeader>
@@ -193,10 +193,10 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
 
               {/* HR Report */}
               <TabsContent value="hr" className="space-y-4">
-                <Card>
+                <Card className="bg-gray-700/30 border-gray-600/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-blue-600" />
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <Users className="h-5 w-5 text-blue-400" />
                       Báo cáo Nhân sự
                     </CardTitle>
                   </CardHeader>
@@ -259,10 +259,10 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
 
               {/* Operations Report */}
               <TabsContent value="operations" className="space-y-4">
-                <Card>
+                <Card className="bg-gray-700/30 border-gray-600/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-purple-600" />
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <TrendingUp className="h-5 w-5 text-purple-400" />
                       Báo cáo Vận hành
                     </CardTitle>
                   </CardHeader>
@@ -327,10 +327,10 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
 
               {/* Compliance Report */}
               <TabsContent value="compliance" className="space-y-4">
-                <Card>
+                <Card className="bg-gray-700/30 border-gray-600/50">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-orange-600" />
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <FileText className="h-5 w-5 text-orange-400" />
                       Báo cáo Tuân thủ
                     </CardTitle>
                   </CardHeader>
@@ -402,15 +402,15 @@ export function ReportForm({ companyInfo, onClose }: ReportFormProps) {
             </Tabs>
 
             {/* Status Footer */}
-            <Card className="mt-6 border-l-4 border-l-primary">
+            <Card className="mt-6 border-l-4 border-l-blue-400 bg-gray-700/30 border-gray-600/50">
               <CardContent className="pt-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <Badge className="bg-green-100 text-green-800">✓ Tự động lưu</Badge>
-                    <Badge className="bg-blue-100 text-blue-800">🔄 Đồng bộ ERP-AI</Badge>
-                    <Badge className="bg-purple-100 text-purple-800">📊 Phân tích AI</Badge>
+                    <Badge className="bg-green-900/50 text-green-300 border-green-700">✓ Tự động lưu</Badge>
+                    <Badge className="bg-blue-900/50 text-blue-300 border-blue-700">🔄 Đồng bộ ERP-AI</Badge>
+                    <Badge className="bg-purple-900/50 text-purple-300 border-purple-700">📊 Phân tích AI</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-400">
                     Dữ liệu được mã hóa và đồng bộ an toàn với hệ thống BMC ERP-AI
                   </p>
                 </div>

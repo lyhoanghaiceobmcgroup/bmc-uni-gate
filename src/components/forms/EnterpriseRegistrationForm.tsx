@@ -307,30 +307,212 @@ const EnterpriseRegistrationForm: React.FC = () => {
     navigate(-1);
   };
 
-  // Generate company report data
+  // Generate company report data - Enhanced with full KPIs and metrics
   const generateCompanyReport = () => {
     const currentDate = new Date().toISOString().split('T')[0];
+    const revenue = parseFloat(formData.annualRevenue.replace(/[^0-9]/g, '')) || 0;
+    const employeeCount = parseInt(formData.employeeCount.replace(/[^0-9]/g, '')) || 0;
+    const totalCapital = parseFloat(formData.totalCapital.replace(/[^0-9]/g, '')) || 0;
+    
     return {
       company_id: `NEW_${Date.now()}`,
       company_name: formData.companyName,
       report_date: currentDate,
-      revenue: parseFloat(formData.annualRevenue.replace(/[^0-9]/g, '')) || 0,
-      employee_count: parseInt(formData.employeeCount.replace(/[^0-9]/g, '')) || 0,
+      
+      // Financial Metrics
+      revenue: revenue,
+      total_profit: Math.round(revenue * 0.1), // Conservative 10% profit margin for new company
+      total_assets: totalCapital,
+      total_expenses: Math.round(revenue * 0.9), // 90% expense ratio
+      net_profit: Math.round(revenue * 0.1),
+      total_liabilities: Math.round(totalCapital * 0.2), // Conservative 20% debt
+      
+      // Operational Metrics
+      employee_count: employeeCount,
       kpi_score: 85, // Default KPI for new companies
+      
+      // Risk and Compliance
+      risk_score: 25, // Low risk for new company (0-100 scale)
+      compliance_status: 'compliant',
+      compliance_score: 95, // High compliance for new company
+      
+      // Portfolio Metrics
+      portfolio_value: totalCapital,
+      roi_percentage: 0, // New company, no ROI yet
+      
+      // Business Information
+      industry: formData.industry,
+      business_type: formData.businessType,
+      business_field: formData.businessField,
+      establishment_year: formData.establishmentYear,
+      
+      // BMC Investment Details
+      bmc_equity_percentage: formData.bmcEquityPercentage,
+      bmc_investment_amount: parseFloat(formData.bmcInvestmentAmount.replace(/[^0-9]/g, '')) || 0,
+      
+      // Contact Information
+      address: formData.address,
+      phone: formData.phone,
+      email: formData.email,
+      website: formData.website,
+      
+      // Representative Information
+      representative_name: formData.representativeName,
+      representative_position: formData.representativePosition,
+      representative_phone: formData.representativePhone,
+      representative_email: formData.representativeEmail,
+      
+      // Business Strategy
+      main_products: formData.mainProducts,
+      business_objectives: formData.businessObjectives,
+      market_target: formData.marketTarget,
+      competitive_advantage: formData.competitiveAdvantage,
+      business_description: formData.businessDescription,
+      
+      // Organizational Details
       status: 'active',
       organizational_level: 'F5', // New companies start at F5
+      
+      // AI Insights for New Company
+      ai_insights: [
+        {
+          type: "Welcome Forecast",
+          message: `Chào mừng ${formData.companyName} gia nhập hệ sinh thái BMC! Dự báo tăng trưởng 15-20% trong năm đầu.`,
+          confidence: 85,
+          impact: "High"
+        },
+        {
+          type: "Market Opportunity",
+          message: `Ngành ${formData.industry} đang có xu hướng tăng trưởng tích cực. Khuyến nghị tập trung vào ${formData.marketTarget}.`,
+          confidence: 78,
+          impact: "Medium"
+        },
+        {
+          type: "BMC Support",
+          message: `Với ${formData.bmcEquityPercentage}% vốn góp từ BMC, công ty sẽ được hỗ trợ đầy đủ về tài chính và chiến lược.`,
+          confidence: 95,
+          impact: "High"
+        }
+      ],
+      
+      // Metadata
       created_by: user?.id || 'system',
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
+      report_type: 'initial_registration'
     };
   };
 
-  // Generate department reports for the new company
+  // Generate department reports for the new company - Standardized 9 Core Departments
   const generateDepartmentReports = (companyId: string) => {
     const departments = [
-      { name: 'Tài chính - Kế toán', revenue: 0, employee_count: 2, kpi_score: 80 },
-      { name: 'Nhân sự - Đào tạo', revenue: 0, employee_count: 1, kpi_score: 85 },
-      { name: 'Công nghệ - Hạ tầng số', revenue: 0, employee_count: 3, kpi_score: 90 },
-      { name: 'Kinh doanh', revenue: 0, employee_count: 2, kpi_score: 75 }
+      { 
+        name: 'Thông tin Cổ đông', 
+        revenue: 0, 
+        employee_count: 1, 
+        kpi_score: 85,
+        kpis: {
+          totalShareholders: formData.shareholders.length,
+          institutionalOwnership: `${formData.bmcEquityPercentage}%`,
+          retailOwnership: `${100 - formData.bmcEquityPercentage}%`,
+          avgDividendYield: "0%" // New company
+        }
+      },
+      { 
+        name: 'Kinh doanh & Marketing', 
+        revenue: parseFloat(formData.annualRevenue.replace(/[^0-9]/g, '')) || 0, 
+        employee_count: 2, 
+        kpi_score: 75,
+        kpis: {
+          marketShare: "0%", // New company
+          customerSatisfaction: "85%", // Default for new company
+          brandValue: "0 VND",
+          conversionRate: "5%" // Conservative estimate
+        }
+      },
+      { 
+        name: 'Tài chính & Kế toán', 
+        revenue: 0, 
+        employee_count: 2, 
+        kpi_score: 80,
+        kpis: {
+          cashFlow: "+0 VND", // New company
+          debtToEquity: "0.1", // Conservative for new company
+          currentRatio: "1.5", // Healthy starting ratio
+          auditScore: "B+" // New company rating
+        }
+      },
+      { 
+        name: 'Nhân sự & Đào tạo', 
+        revenue: 0, 
+        employee_count: parseInt(formData.employeeCount.replace(/[^0-9]/g, '')) || 1, 
+        kpi_score: 85,
+        kpis: {
+          retention: "95%", // High for new company
+          satisfaction: "4.2/5", // Good starting point
+          trainingHours: "24h/year", // Standard training
+          promotion: "0%" // New company
+        }
+      },
+      { 
+        name: 'Sản xuất & Kho vận', 
+        revenue: 0, 
+        employee_count: 2, 
+        kpi_score: 80,
+        kpis: {
+          efficiency: "85%", // Starting efficiency
+          onTimeDelivery: "90%", // Target for new company
+          inventoryTurnover: "6x", // Conservative estimate
+          wasteReduction: "5%" // Initial target
+        }
+      },
+      { 
+        name: 'Chiến lược & R&D', 
+        revenue: 0, 
+        employee_count: 1, 
+        kpi_score: 85,
+        kpis: {
+          rdInvestment: "2% revenue", // Conservative for new company
+          patents: "0 active", // New company
+          innovations: "0 launched", // New company
+          marketPenetration: "1%" // Starting point
+        }
+      },
+      { 
+        name: 'Công nghệ & Hạ tầng số', 
+        revenue: 0, 
+        employee_count: 2, 
+        kpi_score: 90,
+        kpis: {
+          uptime: "99%", // Good target for new company
+          digitalAdoption: "70%", // Modern new company
+          cybersecurity: "80/100", // Basic security
+          aiImplementation: "30%" // Starting AI adoption
+        }
+      },
+      { 
+        name: 'Pháp chế & Tuân thủ', 
+        revenue: 0, 
+        employee_count: 1, 
+        kpi_score: 90,
+        kpis: {
+          compliance: "95%", // High compliance for new company
+          legalRisk: "Low", // New company advantage
+          contracts: "0 active", // New company
+          disputes: "0 ongoing" // Clean start
+        }
+      },
+      { 
+        name: 'Đầu tư & Quỹ', 
+        revenue: 0, 
+        employee_count: 1, 
+        kpi_score: 80,
+        kpis: {
+          totalFunds: formData.totalCapital,
+          portfolioROI: "0%", // New company
+          newInvestments: "0 deals", // New company
+          exitValue: "0 VND" // New company
+        }
+      }
     ];
 
     return departments.map(dept => ({
@@ -341,6 +523,7 @@ const EnterpriseRegistrationForm: React.FC = () => {
       revenue: dept.revenue,
       employee_count: dept.employee_count,
       kpi_score: dept.kpi_score,
+      kpis: dept.kpis, // Add detailed KPIs
       status: 'active',
       created_by: user?.id || 'system',
       updated_at: new Date().toISOString()
