@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
+import TechInfrastructureStore from "./pages/TechInfrastructureStore";
 import NotFound from "./pages/NotFound";
 import ConsolidatedReport from "./pages/ConsolidatedReport";
 import StrategicDashboard from "./pages/StrategicDashboard";
@@ -44,7 +45,8 @@ const App = () => (
           }}
         >
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<TechInfrastructureStore />} />
+            <Route path="/platform" element={<Index />} />
             <Route path="/project-registration" element={<ProjectRegistration />} />
             <Route path="/enterprise-registration" element={<EnterpriseRegistration />} />
           <Route 
